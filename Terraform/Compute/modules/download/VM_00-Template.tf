@@ -1,0 +1,93 @@
+# Search and replace "_vm_01" with "_vm_0x"
+# Delete "/*" to uncomment the section and enable
+variable "vm_name" {
+  default = "downloader01"
+}
+variable "vm_ip" {
+  default = "10.11.14.41"
+}
+
+
+
+#===============================================================================
+# Template VM
+#===============================================================================
+
+## Template data sources
+
+data "vsphere_virtual_machine" "template" {
+  #name          = var.vsphere_virtual_machine_template_vm_00
+  name          = var.vm_template
+  datacenter_id = data.vsphere_datacenter.dc.id
+}# */
+
+#===============================================================================
+# Clone VM
+#===============================================================================
+
+resource "vsphere_virtual_machine" "cloned_virtual_machine" {
+  name             = "TF_${var.vm_name}"
+  resource_pool_id = data.vsphere_resource_pool.pool.id
+  datastore_id     = data.vsphere_datastore.datastore.id
+  folder           = vsphere_folder.folder.path
+  guest_id         = data.vsphere_virtual_machine.template.guest_id
+
+  num_cpus                   = 4
+  num_cores_per_socket       = 1
+  memory                     = 4096
+  boot_delay                 = 0
+  force_power_off            = true
+  #nested_hv_enabled          = true
+  #hv_mode                    = "hvAuto"
+  #wait_for_guest_net_timeout = -1
+
+  scsi_type = data.vsphere_virtual_machine.template.scsi_type
+  firmware  = data.vsphere_virtual_machine.template.firmware
+
+  network_interface {
+    network_id   = data.vsphere_network.network.id
+    adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
+  }
+
+  disk {
+    label = "disk0"
+    #eagerly_scrub    = data.vsphere_virtual_machine.template.disks[0].eagerly_scrub
+    #thin_provisioned = data.vsphere_virtual_machine.template.disks[0].thin_provisioned
+    eagerly_scrub    = false
+    thin_provisioned = true
+    size = data.vsphere_virtual_machine.template.disks.0.size
+  }
+
+  #disk {
+  #  label = "disk1"
+  #  unit_number = 1
+  #  #eagerly_scrub    = data.vsphere_virtual_machine.template.disks[1].eagerly_scrub
+  #  #thin_provisioned = data.vsphere_virtual_machine.template.disks[1].thin_provisioned
+  #  eagerly_scrub    = false
+  #  thin_provisioned = true
+  #  size = data.vsphere_virtual_machine.template.disks.1.size
+  #}
+
+  #cdrom {
+  #  datastore_id = data.vsphere_datastore.software.id
+  #  path         = "vCenter_ISO/VMware-VCSA-all-6.7.0-16046470.iso"
+  #}
+
+  clone {
+    template_uuid = data.vsphere_virtual_machine.template.id
+
+    customize {
+      linux_options {
+        host_name = var.vm_name
+        domain    = var.network_domain
+      }
+
+      network_interface {
+        ipv4_address = var.vm_ip
+        ipv4_netmask = var.network_mask
+      }
+
+      ipv4_gateway = var.network_gateway
+    }
+  }
+}# */
