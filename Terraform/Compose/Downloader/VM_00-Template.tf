@@ -32,7 +32,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   folder           = vsphere_folder.folder.path
   guest_id         = data.vsphere_virtual_machine.template.guest_id
 
-  num_cpus                   = 4
+  num_cpus                   = 2
   num_cores_per_socket       = 1
   memory                     = 4096
   boot_delay                 = 0
@@ -78,7 +78,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
 
     customize {
       linux_options {
-        host_name = var.vm_name
+        host_name = "TF_${var.vm_name}"
         domain    = var.network_domain
       }
 

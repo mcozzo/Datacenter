@@ -22,7 +22,7 @@ student_count   = 5
 vsphere_datacenter = "WOW-Rack"
 vsphere_datastore = "ESX2"
 vsphere_resource_pool = "DC.cozzo.net/Resources"
-vsphere_folder = "/Terraform"
+vsphere_folder = "Terraform"
 
 # Prefix to use for the class 10.x[.0.0]
 subnet_prefix   = "10.2"

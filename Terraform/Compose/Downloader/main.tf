@@ -40,6 +40,7 @@ provider "vsphere" {
 #	}
 #}
 
+/*
 module "download" {
   count = var.build_download ? 1 : 0
   source = "./modules/download"
