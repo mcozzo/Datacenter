@@ -1,0 +1,20 @@
+---
+# Run this after a clean install
+
+- name: Sysprep tasks
+  hosts: all
+  roles:
+    - ubuntu-sysprep
+  tags:
+    - sysprep
+    #- never
+  become: yes
+
+#- name: Shutdown host
+#  hosts: all
+#  roles:
+#    - ubuntu-shutdown
+#  tags:
+#    #- sysprep
+#    #- never
+#  become: yes

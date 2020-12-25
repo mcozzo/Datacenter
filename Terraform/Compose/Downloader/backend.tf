@@ -1,11 +1,12 @@
-#terraform {
-#  backend "azurerm" {
-#    storage_account_name = "ivoxyterraformstate"
-#    container_name       = "2020-nabp-tfstate"
-#    key                  = "prod.terraform.tfstate"
+# https://www.terraform.io/docs/backends/types/gcs.html
+
+terraform {
+  backend "gcs" {
+    bucket  = "tf-dc.cozzo.net"
+    prefix  = "terraform/downloaders"
+    # gcloud auth application-default login
+    ## Doesn't work
+    ## export GOOGLE_APPPLICATION_CREDENTIALS=/Users/mattcozzolino/GitHub/vars/cozzo-dns-8f248ebc58f2.json
+  }
+}
 #
-#    # Access Key is defined as env variable ARM_ACCESS_KEY
-#    # You must define this in your environment prior to running terraform operations
-#    # Example: export ARM_ACCESS_KEY=<key found in 1pass>
-#  }
-#}

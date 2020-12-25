@@ -1,0 +1,22 @@
+---
+# Run this after a clean install
+
+- name: Configure user space
+  hosts: all
+  roles:
+    - ubuntu-users
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+- name: Clean user space
+  hosts: all
+  roles:
+    - ubuntu-clean-build-user
+  tags:
+    - users-clean
+    - never
+  become: yes
+  #become_user: svc-ansible
+  #ansible_ssh_user: svc-ansible

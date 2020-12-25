@@ -1,0 +1,52 @@
+---
+
+# Get keys from https://ftp-master.debian.org/keys/
+- name: Update apt-keys
+  apt_key:
+    url: https://ftp-master.debian.org/keys/archive-key-10.asc
+    state: present
+  tags:
+    - apt
+  become: yes
+
+- name: Update apt
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+  become: yes
+
+- name: Apt upgrade
+  apt:
+    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+  notify:
+    - Reboot host
+
+- name: Open vm tools
+  apt:
+    name: open-vm-tools
+    state: present
+#    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+    - sysprep
+#  notify:
+#    - Reboot host
+
+- name: Apt cleanup
+  apt:
+    purge: yes
+    autoremove: yes
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+  notify:
+    - Reboot host

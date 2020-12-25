@@ -1,0 +1,11 @@
+---
+# Run this after a clean install
+
+- name: Apt
+  hosts: all
+  roles:
+    - apt-upgrade
+  #tags:
+  #  - sysprep
+  #  #- never
+  become: yes

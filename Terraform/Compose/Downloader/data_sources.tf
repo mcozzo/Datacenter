@@ -24,7 +24,7 @@ data "vsphere_resource_pool" "pool" {
 
 resource "vsphere_folder" "folder" {
 #  count         = var.student_count
-  path          = "Terraform/${var.module_folder}"
+  path          = "Terraform/TF_${var.module_folder}"
   type          = "vm"
   datacenter_id = data.vsphere_datacenter.dc.id
 }

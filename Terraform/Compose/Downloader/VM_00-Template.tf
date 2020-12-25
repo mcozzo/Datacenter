@@ -1,13 +1,32 @@
 # Search and replace "_vm_01" with "_vm_0x"
 # Delete "/*" to uncomment the section and enable
 variable "vm_name" {
-  default = "downloader01"
+  default = "Downloader01"
 }
 variable "vm_ip" {
   default = "10.11.14.41"
 }
 
+#===============================================================================
+# Assign a tag
+#===============================================================================
 
+resource "vsphere_tag_category" "category" {
+  name        = "terraform"
+  cardinality = "SINGLE"
+  description = "Managed by Terraform"
+
+  associable_types = [
+    "VirtualMachine",
+    "Datastore",
+  ]
+}
+
+resource "vsphere_tag" "tag" {
+  name        = "terraform-managed"
+  category_id = vsphere_tag_category.category.id
+  description = "Managed by Terraform"
+}
 
 #===============================================================================
 # Template VM
@@ -27,6 +46,7 @@ data "vsphere_virtual_machine" "template" {
 
 resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   name             = "TF_${var.vm_name}"
+  #name             = "TFDL01"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   folder           = vsphere_folder.folder.path
@@ -39,7 +59,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   force_power_off            = true
   #nested_hv_enabled          = true
   #hv_mode                    = "hvAuto"
-  #wait_for_guest_net_timeout = -1
+  #wait_for_guest_net_timeout = 20
 
   scsi_type = data.vsphere_virtual_machine.template.scsi_type
   firmware  = data.vsphere_virtual_machine.template.firmware
@@ -75,19 +95,21 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
-
     customize {
       linux_options {
-        host_name = "TF_${var.vm_name}"
+        #host_name = "TF_${var.vm_name}"
+        #host_name = "TF-Downloader01"
+        host_name = var.vm_name
         domain    = var.network_domain
       }
-
       network_interface {
         ipv4_address = var.vm_ip
         ipv4_netmask = var.network_mask
       }
-
       ipv4_gateway = var.network_gateway
+      dns_server_list = var.dns_servers
+      #dns_suffix_list = var.network_domain
     }
   }
+  tags = ["${vsphere_tag.tag.id}"]
 }# */

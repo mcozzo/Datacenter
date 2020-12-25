@@ -10,7 +10,7 @@ variable "admin_password" {}
 #===============================================================================
 
 variable "vm_template" {
-  default = "TPL_Ubuntu_1804"
+  default = "TPL_Ubuntu_2004"
 }
 variable "network_name" {
   default = "dvsDC01-014-Docker"
@@ -26,6 +26,9 @@ variable "network_mask" {
 }
 variable "module_folder" {
   default = "Downloader"
+}
+variable "dns_servers" {
+  default = ["10.11.14.4", "10.11.14.5"]
 }
 
 #===============================================================================

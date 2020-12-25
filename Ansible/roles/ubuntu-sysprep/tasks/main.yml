@@ -1,0 +1,125 @@
+---
+# Sysprep settings
+
+- name: Update apt
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+  become: yes
+
+#- name: Install virt-sysprep
+#  apt:
+#    name: open-vm-tools
+#    state: present
+##    upgrade: safe
+#    update_cache: yes
+#    cache_valid_time: 3600
+#  tags:
+#    - apt
+#    - sysprep
+##  notify:
+##    - Reboot host
+
+- name: Install open vm tools
+  apt:
+    name: open-vm-tools
+    state: present
+#    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+    - sysprep
+#  notify:
+#    - Reboot host
+
+# https://kb.vmware.com/s/article/56409
+- name: Set guest customization (tmp.conf)
+  lineinfile:
+    path: /usr/lib/tmpfiles.d/tmp.conf
+    regexp: 'D\s\/tmp\s1777\sroot\sroot\s-'
+    line: '#D /tmp 1777 root root -'
+  tags:
+    - guest
+    - sysprep
+
+# https://kb.vmware.com/s/article/56409
+- name: Set guest customization (open-vm-tools.service )
+  lineinfile:
+    path: /lib/systemd/system/open-vm-tools.service
+    insertafter: '\[Unit\]'
+    line: 'After=dbus.service'
+  tags:
+    - guest
+    - sysprep
+
+##http://www.diigo.com/annotated/5d5c60dcd2ffc7eb5bbe1f2e5f224a33
+#- name: Delte /etc/udev/rules.d/70-persistent-net.rules
+#  file:
+#    path: /etc/udev/rules.d/70-persistent-net.rules
+#    state: absent
+#
+## https://github.com/vmware/open-vm-tools/issues/453
+#- name: Delte /etc/udev/rules.d/70-persistent-net.rules
+#  file:
+#    path: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+#    state: absent
+
+##/etc/os-release
+##/etc/issue
+#- name: "Change version to 18.04"
+#  replace:
+#    #path: /etc/os-release
+#    path: "{{ item }}"
+#    #regexp: '20.04\.*[0-9]*'
+#    regexp: '20.04'
+#    replace: '18.04'
+#  with_items:
+#    - "/etc/os-release"
+#    - "/etc/issue"
+
+# https://communities.vmware.com/t5/VMware-vCenter-Discussions/Ubuntu-20-04-Customization-Profile-Error/m-p/1874080#M28402
+- name: Remove cloud-init
+  apt:
+    name: cloud-init
+    state: absent
+    #upgrade: safe
+    #update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+    - sysprep
+#  notify:
+#    - Reboot host
+
+- name: Clean cloud-init directory
+  file:
+    path: "/etc/cloud"
+    state: absent
+  become: yes
+
+## Remove /etc/machine-id
+#- name: Delte /etc/machine-id
+#  file:
+#    path: /etc/machine-id
+#    state: absent
+
+#- name: Shut down the machine
+#  community.general.shutdown:
+
+## Strip SSH host keys
+## https://blog.digitalocean.com/avoid-duplicate-ssh-host-keys/
+#- name: Delte /etc/ssh/ssh_host_*
+#  file:
+#    path: /etc/ssh/ssh_host_*
+#    state: absent
+
+#- name: Shutdown hosts
+#  command: /sbin/shutdown -h now
+#  when: ansible_facts['os_family'] == "Debian"
+#  ignore_errors: 'yes'
+#  tags:
+#    - never
+#    - shutdown
