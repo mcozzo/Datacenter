@@ -29,11 +29,11 @@
   #  - never
   become: yes
 
-#- name: Configure and run docker containers
-#  hosts: downloader
-#  roles:
-#    - docker-run
-#  #tags:
-#  #  - users-new
-#  #  - never
-#  become: yes
+- name: Configure and run docker containers
+  hosts: downloader
+  roles:
+    - docker-run
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
