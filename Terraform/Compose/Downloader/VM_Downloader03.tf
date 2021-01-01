@@ -1,58 +1,25 @@
 # Search and replace "_vm_01" with "_vm_0x"
 # Delete "/*" to uncomment the section and enable
-variable "vm_name" {
-  default = "Downloader01"
+variable "vm_name_03" {
+  default = "Downloader03"
 }
-variable "vm_ip" {
-  default = "10.11.14.41"
+variable "vm_ip_03" {
+  default = "10.11.14.33"
 }
-
-#===============================================================================
-# Assign a tag
-#===============================================================================
-
-resource "vsphere_tag_category" "category" {
-  name        = "terraform"
-  cardinality = "SINGLE"
-  description = "Managed by Terraform"
-
-  associable_types = [
-    "VirtualMachine",
-    "Datastore",
-  ]
-}
-
-resource "vsphere_tag" "tag" {
-  name        = "terraform-managed"
-  category_id = vsphere_tag_category.category.id
-  description = "Managed by Terraform"
-}
-
-#===============================================================================
-# Template VM
-#===============================================================================
-
-## Template data sources
-
-data "vsphere_virtual_machine" "template" {
-  #name          = var.vsphere_virtual_machine_template_vm_00
-  name          = var.vm_template
-  datacenter_id = data.vsphere_datacenter.dc.id
-}# */
 
 #===============================================================================
 # Clone VM
 #===============================================================================
 
-resource "vsphere_virtual_machine" "cloned_virtual_machine" {
-  name             = "TF_${var.vm_name}"
+resource "vsphere_virtual_machine" "cloned_virtual_machine_03" {
+  name             = "TF_${var.vm_name_03}"
   #name             = "TFDL01"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   folder           = vsphere_folder.folder.path
   guest_id         = data.vsphere_virtual_machine.template.guest_id
 
-  num_cpus                   = 2
+  num_cpus                   = 1
   num_cores_per_socket       = 1
   memory                     = 4096
   boot_delay                 = 0
@@ -95,15 +62,16 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
 
   clone {
     template_uuid = data.vsphere_virtual_machine.template.id
+    timeout       = 60
     customize {
       linux_options {
-        #host_name = "TF_${var.vm_name}"
+        #host_name = "TF_${var.vm_name_03}"
         #host_name = "TF-Downloader01"
-        host_name = var.vm_name
+        host_name = var.vm_name_03
         domain    = var.network_domain
       }
       network_interface {
-        ipv4_address = var.vm_ip
+        ipv4_address = var.vm_ip_03
         ipv4_netmask = var.network_mask
       }
       ipv4_gateway = var.network_gateway

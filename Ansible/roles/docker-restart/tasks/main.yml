@@ -1,0 +1,43 @@
+---
+
+# Restart containers
+
+- name: Include docker vars
+  include_vars:
+    file: ./group_vars/docker.yml
+
+- name: Stop containers where they shouldn't be
+  docker_compose:
+    project_src: /mnt/git/docker/apps/{{ item.key }}
+    state: absent
+    #remove_images: all
+    #remove_orphans: yes
+    #remove_volumes: yes
+  become: yes
+  when: item.value != inventory_hostname
+  #become_user: "{{ ansible_user }}"
+  #loop: "{{ docker_container_2_hosts|dictsort }}"
+  loop: "{{ docker_container_2_hosts | dict2items }}"
+  #tags:
+  #  - install
+  #  - update
+  #  - never
+
+- name: Restart containers
+  docker_compose:
+    build: yes
+    #project_src: /Users/mattcozzolino/GitHub/Docker/apps/homeassistant-pi/docker-compose.yml
+    project_src: /mnt/git/docker/apps/{{ item.key }}
+    #register: output
+    pull: yes
+    state: present
+    restarted: yes
+  when: item.value == inventory_hostname
+  become: yes
+  #become_user: "{{ ansible_user }}"
+  #loop: "{{ docker_container_2_hosts|dictsort }}"
+  loop: "{{ docker_container_2_hosts | dict2items }}"
+  #tags:
+  #  - install
+  #  - update
+  #  - never

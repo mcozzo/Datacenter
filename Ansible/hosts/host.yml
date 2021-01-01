@@ -6,10 +6,25 @@ all:
       ansible_connection: local
       ansible_user: mattcozzolino
       ansible_python_interpreter: /usr/local/bin/python3
-    nginx.dc.cozzo.net:
-#      host_name: NGINX
-#      host_domain: dc.cozzo.net
+  children:
+    nginx:
+      hosts:
+        nginx.dc.cozzo.net:
+      #     host_name: NGINX
+      #     host_domain: dc.cozzo.net
       #ansible_user: svc-ansible
-      host_ip: 10.11.14.11
-#  vars:
-#    ansible_python_interpreter: /Users/mattcozzolino/Library/Python/3.7/bin
+      #host_ip: 10.11.14.11
+    downloader:
+      hosts:
+      #hostname:
+      #downloader[01:03].dc.cozzo.net:
+      #  host_ip: 10.11.14.[41:43]:
+        downloader01.dc.cozzo.net:
+          ansible_host: 10.11.14.31
+        downloader02.dc.cozzo.net:
+          ansible_host: 10.11.14.32
+        downloader03.dc.cozzo.net:
+          ansible_host: 10.11.14.33
+
+      #  vars:
+      #    ansible_python_interpreter: /Users/mattcozzolino/Library/Python/3.7/bin

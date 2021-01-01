@@ -1,0 +1,39 @@
+---
+# Run this after a clean install
+# Configures all rquired parts to run containers
+
+#- name: Configure storage
+#  hosts: downloader
+#  roles:
+#    - ubuntu-docker-storage
+#  #tags:
+#  #  - users-new
+#  #  - never
+#  become: yes
+
+- name: Configure and git clone
+  hosts: downloader
+  roles:
+    - docker-git
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+- name: Configure docker host
+  hosts: downloader
+  roles:
+    - docker-host
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+#- name: Configure and run docker containers
+#  hosts: downloader
+#  roles:
+#    - docker-run
+#  #tags:
+#  #  - users-new
+#  #  - never
+#  become: yes

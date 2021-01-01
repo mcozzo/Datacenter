@@ -1,0 +1,99 @@
+---
+
+- name: Make sure docker isn't running
+  systemd:
+    name: docker
+    enabled: yes
+    state: stopped
+  ignore_errors: yes
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+#  tags:
+#    - apt
+
+- name: Install docker & dependencies
+  apt:
+    name:
+      - docker
+      - docker-compose
+      #- python
+      #- python-pip
+      - python3
+      - python3-pip
+      - open-iscsi
+#      - python3-setuptools
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  notify:
+    - Start docker on boot
+    - Reboot host
+  tags:
+    - docker
+
+- name: Install python requirements
+  pip:
+    name:
+      - docker
+      - docker-compose
+
+- name: Disable SWAP (1/2)
+  shell: |
+    swapoff -a
+#  notify:
+#    - Reboot host
+  tags:
+    - swapoff
+
+- name: Disable SWAP in fstab (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s+sw\s+.*)$'
+    replace: '#\1'
+  notify:
+    - Reboot host
+  tags:
+    - swapoff
+
+# Build ramdisk
+- name: Create /mnt/ramdisk set permissions 0755
+  file:
+    path: /mnt/ramdisk
+    state: directory
+    mode: 0755
+  become: yes
+#  notify:
+#    - Reboot host
+  tags:
+    - ramdisk
+
+- name: Add ramdisk /mnt/ramdisk
+  lineinfile:
+    path: /etc/fstab
+    regexp: '^ramdisk\s*/mnt/ramdisk\s*tmpfs\s*defaults,size=1G,x-gvfs-show\s*0\s*0'
+    line: 'ramdisk  /mnt/ramdisk  tmpfs  defaults,size=1G,x-gvfs-show  0  0'
+    create: yes
+  notify:
+    - Reboot host
+  tags:
+    - ramdisk
+
+- name: Configure docker as service
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes

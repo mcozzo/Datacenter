@@ -1,0 +1,439 @@
+---
+# Mount NFS nodes for docker
+# Stand up o2cb and setup clustering
+# Connect to iSCSI shared datastore
+
+- name: Include docker vars
+  include_vars:
+    file: ./group_vars/docker.yml
+
+- name: Make sure docker isn't running
+  systemd:
+    name: docker
+    enabled: no
+    state: stopped
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  ignore_errors: yes
+  become: yes
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+#  tags:
+#    - apt
+
+- name: Install applications
+  apt:
+    name:
+      - nfs-common
+      - open-iscsi
+      #- iscsiadm
+      - multipath-tools
+      - ocfs2-tools
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  tags:
+    - docker
+
+################################################################################
+# NFS
+################################################################################
+
+- name: Create nfs mounts
+  mount:
+    path: "{{ item.path }}"
+    src:  "{{ item.src }}"
+    fstype: nfs
+    #opts:
+    state: mounted
+  with_items:
+    - { src: "10.11.14.10:/media",    path: "/mnt/media" }
+    - { src: "10.11.14.10:/docker",   path: "/mnt/docker" }
+    - { src: "10.11.14.10:/software", path: "/mnt/software" }
+    - { src: "10.11.14.10:/download", path: "/mnt/download" }
+    #- { src: "/dev/mapper/3600a098052586455473f515454587479", path: "/mnt/docker-iscsi" }
+
+################################################################################
+# iSCSI
+# We need iSCSI before ocfs2
+# Validate with
+# sudo iscsiadm -m node
+################################################################################
+
+- name: Configure iSCSI IQN
+  lineinfile:
+    path: /etc/iscsi/initiatorname.iscsi
+    regexp: 'InitiatorName\=[a-zA-Z0-9:.-]+'
+    line: 'InitiatorName={{ item.value }}'
+  become: yes
+  when: item.key == inventory_hostname
+  #become_user: "{{ ansible_user }}"
+  #loop: "{{ docker_container_2_hosts|dictsort }}"
+  loop: "{{ docker_iscsi_iqn | dict2items }}"
+  notify:
+  - Restart iSCSI
+  - Discover iSCSI
+  #tags:
+  #  - install
+  #  - update
+  #  - never
+
+- name: Place iSCSI config file
+  template:
+    src: etc-iscsi-iscsid.conf.j2
+#    dest: /home/mattcozzolino/resolv.conf
+    dest: /etc/iscsi/iscsid.conf
+    owner: root
+    group: root
+    mode: '600'
+  tags:
+    - user
+  become: yes
+  notify:
+  - "Restart iSCSI"
+  - "Discover iSCSI"
+  #become_user: "{{ ansible_user }}"
+
+- name: Run handlers
+  meta: flush_handlers
+
+#- name: Disconnect iSCSI
+#  community.general.open_iscsi:
+#    #show_nodes: yes
+#    #discover: yes
+#    #auto_node_startup: yes
+#    login: no
+#    portal: 10.11.14.12
+
+#- name: restart iSCSI
+#  systemd:
+#    name: iscsid
+#    enabled: yes
+#    state: restarted
+#  #notify:
+#  #  - Reboot host
+#  tags:
+#    - docker
+#  become: yes
+#
+## Validate with
+## sudo iscsiadm -m node
+#- name: Discover iSCSI nodes
+#  community.general.open_iscsi:
+#    show_nodes: yes
+#    discover: yes
+#    login: yes
+#    auto_node_startup: yes
+#    #portal: 10.11.14.12
+#    portal: "{{ item }}"
+#  with_items:
+#    - 10.11.14.12
+#    - 10.11.14.13
+#    - 10.11.14.14
+#    - 10.11.14.15
+
+## Because it doesn't pickup a size change
+#- name: Re-scan existing iSCSI mounts
+#  shell: |
+#    iscsiadm -m node -R
+#  become: yes
+##  notify:
+##    - Reboot host
+
+################################################################################
+# multipath
+################################################################################
+
+- name: Place multipath config file
+  template:
+    src: etc-multipath.conf.j2
+#    dest: /home/mattcozzolino/resolv.conf
+    dest: /etc/multipath.conf
+    owner: root
+    group: root
+    mode: '644'
+  tags:
+    - user
+  become: yes
+  notify:
+  - Reboot host
+  #become_user: "{{ ansible_user }}"
+
+#- name: restart multipath
+#  systemd:
+#    name: multipathd
+#    enabled: yes
+#    state: restarted
+#  #notify:
+#  #  - Reboot host
+#  tags:
+#    - docker
+#  become: yes
+
+# Reboot because that's the only way i've gotten it to pickup iSCSI pathing.
+- name: Run handlers
+  meta: flush_handlers
+#- name: Restart because multipath is weird
+#  reboot:
+
+#- name: Flush multipath and reload
+#  shell: |
+#    multipath -r
+#  become: yes
+#  #notify:
+#  #  - Reboot host
+
+################################################################################
+# o2cb
+################################################################################
+
+# Initial setup: dpkg-reconfigure ocfs2-tools
+#   or quietly: dpkg-reconfigure -f noninteractive ocfs2-tools
+# Show debconf settings: sudo debconf-show ocfs2-tools
+# View cluster status: sudo o2cb cluster-status
+# View cluster config: cat /etc/default/o2cb
+# http://manpages.ubuntu.com/manpages/focal/man5/o2cb.sysconfig.5.html
+# http://manpages.ubuntu.com/manpages/focal/man7/ocfs2.7.html
+# https://www.thegeekdiary.com/linux-os-service-o2cb/
+
+- name: Stop o2cb & ocfs2
+#  command: echo 'hello world'
+  systemd:
+    name: "{{ item }}"
+    #enabled: yes
+    state: stopped
+  become: yes
+  with_items:
+    - o2cb
+    - ocfs2
+
+- name: Place o2cb cluster config
+  template:
+    src: "{{ item.src }}"
+#    dest: /home/mattcozzolino/resolv.conf
+    dest: "{{ item.dst }}"
+    owner: root
+    group: root
+    mode: "{{ item.mode }}"
+  notify:
+  - Restart o2cb service
+  - Register o2cb cluster
+  with_items:
+    - { src: "etc-ocfs2-cluster.conf.j2", dst: "/etc/ocfs2/cluster.conf", mode: "0644" }
+    - { src: "etc-default-o2cb.j2",       dst: "/etc/default/o2cb",        mode: "0644" }
+    #- { src: "etc-init.d-o2cb.j2",        dst: "/etc/init.d/o2cb",        mode: "0755" }
+    #- { src: "etc-init.d-ocfs2.j2",       dst: "/etc/init.d/ocfs2",       mode: "0755" }
+  tags:
+    - user
+  become: yes
+  #become_user: "{{ ansible_user }}"
+
+- name: Start o2cb & ocfs2
+#  command: echo 'hello world'
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: restarted
+  become: yes
+  with_items:
+    - o2cb
+    - ocfs2
+
+- name: Debconf ocfs2 tools | clustername
+  debconf:
+    name: ocfs2-tools
+    question: ocfs2-tools/clustername
+    value: "docker"
+    vtype: string
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+  #- Reboot host
+
+- name: Debconf ocfs2 tools | init
+  debconf:
+    name: ocfs2-tools/init
+    question: ocfs2-tools/init
+    value: "true"
+    vtype: select
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+
+- name: Debconf ocfs2 tools | idle_timeout
+  debconf:
+    name: ocfs2-tools/idle_timeout
+    question: ocfs2-tools/idle_timeout
+    value: "30000"
+    vtype: string
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+
+- name: Debconf ocfs2 tools | keepalive_delay
+  debconf:
+    name: ocfs2-tools/keepalive_delay
+    question: ocfs2-tools/keepalive_delay
+    value: "2000"
+    vtype: string
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+
+- name: Debconf ocfs2 tools | reconnect_delay
+  debconf:
+    name: ocfs2-tools/reconnect_delay
+    question: ocfs2-tools/reconnect_delay
+    value: "2000"
+    vtype: string
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+
+- name: Debconf ocfs2 tools | heartbeat_threshold
+  debconf:
+    name: ocfs2-tools/heartbeat_threshold
+    question: ocfs2-tools/heartbeat_threshold
+    value: "31"
+    vtype: string
+    unseen: no
+  become: yes
+  become_user: root
+  notify:
+  - Reconfigure ocfs2
+  - Restart o2cb service
+  - Register o2cb cluster
+
+#- name: Configure ocfs2 tools | Commit?
+#  debconf:
+#    name: ocfs2-tools
+
+# Run reconfigure if needed
+- name: Run handlers
+  meta: flush_handlers
+
+# Name: ocfs2-tools/clustername
+# Template: ocfs2-tools/clustername
+# Value: docker
+# Owners: ocfs2-tools
+# Flags: seen
+#
+# Name: ocfs2-tools/heartbeat_threshold
+# Template: ocfs2-tools/heartbeat_threshold
+# Value: 31
+# Owners: ocfs2-tools
+# Flags: seen
+#
+# Name: ocfs2-tools/idle_timeout
+# Template: ocfs2-tools/idle_timeout
+# Value: 30000
+# Owners: ocfs2-tools
+# Flags: seen
+#
+# Name: ocfs2-tools/init
+# Template: ocfs2-tools/init
+# Value: true
+# Owners: ocfs2-tools
+# Flags: seen
+#
+# Name: ocfs2-tools/keepalive_delay
+# Template: ocfs2-tools/keepalive_delay
+# Value: 2000
+# Owners: ocfs2-tools
+# Flags: seen
+#
+# Name: ocfs2-tools/reconnect_delay
+# Template: ocfs2-tools/reconnect_delay
+# Value: 2000
+# Owners: ocfs2-tools
+# Flags: seen
+
+# sudo debconf-show ocfs2-tools
+# ocfs2-tools/idle_timeout: 30000
+# ocfs2-tools/clustername: docker
+# ocfs2-tools/keepalive_delay: 2000
+# ocfs2-tools/reconnect_delay: 2000
+# ocfs2-tools/heartbeat_threshold: 31
+# ocfs2-tools/init: true
+
+#- name: Place o2cb cluster config
+#  template:
+#    src: ocfs2-cluster.conf.j2
+##    dest: /home/mattcozzolino/resolv.conf
+#    dest: /etc/ocfs2/cluster.conf
+#    owner: root
+#    group: root
+#    mode: '0644'
+#  tags:
+#    - user
+#  become: yes
+#  #become_user: "{{ ansible_user }}"
+
+#- name: Restart o2cb cluster service
+#  systemd:
+#    name: "{{ item }}"
+#    enabled: yes
+#    state: restarted
+#  become: yes
+#  with_items:
+#    - o2cb
+#    - ocfs2
+
+## Check status with
+## sudo o2cb cluster-status
+#- name: Register o2cb cluster config
+#  shell: "{{ item }}"
+#  become: yes
+#  with_items:
+#    - "o2cb register-cluster docker"
+#    #- "sudo o2cb add-heartbeat docker /dev/mapper/3600a098052586455473f515454587479"
+#    - "o2cb start-heartbeat docker"
+##  notify:
+##    - Reboot host
+
+################################################################################
+# the volume needs a filesystem
+# Make filesystem on the disk
+# sudo mkfs.ocfs2 -C 8K -N 10 /dev/mapper/3600a098052586455473f515454587479
+## sudo mkfs.ocfs2 -F -C 8K -N 10 /dev/mapper/3600a098052586455473f515454587479
+################################################################################
+
+- name: Mount iSCSI
+  mount:
+    path: "{{ item.path }}"
+    src:  "{{ item.src }}"
+    fstype: ocfs2
+    #opts:
+    state: mounted
+  with_items:
+    #- { src: "10.11.14.10:/media",    path: "/mnt/media" }
+    #- { src: "10.11.14.10:/docker",   path: "/mnt/docker" }
+    #- { src: "10.11.14.10:/software", path: "/mnt/software" }
+    #- { src: "10.11.14.10:/download", path: "/mnt/download" }
+    - { src: "/dev/mapper/3600a098052586455473f515454587479", path: "/mnt/docker-iscsi" }

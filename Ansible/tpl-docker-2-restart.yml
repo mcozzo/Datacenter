@@ -1,0 +1,19 @@
+---
+
+- name: Configure and git clone
+  hosts: downloader
+  roles:
+    - docker-git
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+- name: Configure and run docker containers
+  hosts: downloader
+  roles:
+    - docker-restart
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
