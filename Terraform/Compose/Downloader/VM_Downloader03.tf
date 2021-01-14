@@ -79,5 +79,5 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_03" {
       #dns_suffix_list = var.network_domain
     }
   }
-  tags = ["${vsphere_tag.tag.id}"]
+  tags = ["${data.vsphere_tag.tag.id}"]
 }# */

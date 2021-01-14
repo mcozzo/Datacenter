@@ -1,0 +1,37 @@
+---
+# This playbook contains common handlers that can be called in "setup" tasks.
+
+# sudo systemctl enable docker
+- name: Start docker on boot
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Restart iSCSI
+  systemd:
+    name: iscsid
+    enabled: yes
+    state: restarted
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes
+
+- name: Restart Multipath
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+    state: restarted
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes
+  with_items:
+    - multipathd
+    #- multipath-tools
+
+- name: Reboot host
+  reboot:

@@ -42,38 +42,12 @@ ansible-playbook -i x.x.x.x, tpl-sysprep-2-sysprep.yml
 Setup and run docker containers
 
 ```bash
-# Initial install, use the build account, and then clean up.
-# Run service account creation
-ansible-playbook -i ./hosts/host.yml -i ./group_vars/docker.yml tpl-docker-0-host.yml
-```
+# Configure storage, iSCSI, NFS, OCFS2
+ansible-playbook -i ./hosts/host.yml tpl-docker-0-storage.yml
+# Configure docker, start containers
+ansible-playbook -i hosts/host.yml tpl-docker-1-host.yml --extra-vars "trident_password=foo"
 
 
-
-
-
-
-
-
-## How to run
-```bash
-# Generally run like This
-ansible-playbook -i hosts.yml play.yml
-# Initial install, use the build account, and then clean up.
-# Run service account creation
-ansible-playbook -i hosts.yml play.yml --tags users-new -e "ansible_ssh_user=usr-build" -K
-# Give the system some time after reboot, then cleanup the build user
-ansible-playbook -i hosts.yml play.yml --tags users-clean
-# Run sysprep tasks
-ansible-playbook -i hosts.yml play.yml --tags sysprep
-# Or
-ansible-playbook -i hosts.yml play.yml --tags sysprep,shutdown
-```
-## TODO
-[ ] User list variable
-
-## Save Yo Shit!
-```bash
-git add *
-git commit -m "<Change This>"
-git push -u origin master
+# Restart conainers. Probably want to limit the scope.
+ansible-playbook -i ./hosts/host.yml tpl-docker-2-restart.yml --limit plex
 ```

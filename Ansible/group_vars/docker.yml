@@ -7,17 +7,25 @@ docker_container_2_hosts:
   radarr.cozzo.net:        downloader01.dc.cozzo.net
   sonarr.cozzo.net:        downloader01.dc.cozzo.net
   transmission.cozzo.net:  downloader02.dc.cozzo.net
-  sabnzbd.cozzo.net:       downloader02.dc.cozzo.net
-  #deluge.cozzo.net:        downloader02.dc.cozzo.net
-  tautulli.cozzo.net:      downloader03.dc.cozzo.net
+  #sabnzbd.cozzo.net:       downloader02.dc.cozzo.net
+  ##deluge.cozzo.net:        downloader02.dc.cozzo.net
+  #tautulli.cozzo.net:      downloader03.dc.cozzo.net
   ombi.cozzo.net:          downloader03.dc.cozzo.net
-  booksonic.cozzo.net:     downloader03.dc.cozzo.net
-  nginx.cozzo.net:         nginx.dc.cozzo.net
+  #booksonic.cozzo.net:     downloader03.dc.cozzo.net
+  ##plex.cozzo.net:          plex.dc.cozzo.net
+  #nginx.cozzo.net:         nginx.dc.cozzo.net
   #cacti.cozzo.net:         downloader03.dc.cozzo.net
-  #homeassistant.cozzo.net: 'downloader03.dc.cozzo.net'
+  ##homeassistant.cozzo.net: 'downloader03.dc.cozzo.net'
 
 docker_iscsi_iqn:
   downloader01.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader01-dc-cozzo-net
   downloader02.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader02-dc-cozzo-net
   downloader03.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader03-dc-cozzo-net
   plex.dc.cozzo.net:         iqn.1993-08.org.debian:01:plex-dc-cozzo-net
+
+netapp_iqn: iqn.1992-08.com.netapp:sn.0859bef84a0311ebb08600a09850869c:vs.5
+netapp_interfaces:
+  - 10.11.14.12
+  - 10.11.14.13
+  - 10.11.14.14
+  - 10.11.14.15

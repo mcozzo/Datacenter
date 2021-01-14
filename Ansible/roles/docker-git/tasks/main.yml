@@ -34,19 +34,19 @@
   #become: yes
   #become_user: "{{ ansible_user }}"
 
-- name: chmod SSH key
-  file:
-    path: "{{ item.path }}"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "{{ item.mode }}"
-  with_items:
-    - { path: '/home/{{ ansible_user }}/.ssh/ssh-git.key', mode: '0600' }
-    - { path: '/home/{{ ansible_user }}/.ssh/ssh-git.pub', mode: '0644' }
-  tags:
-    - user
-  #become: yes
-  #become_user: "{{ ansible_user }}"
+#- name: chmod SSH key
+#  file:
+#    path: "{{ item.path }}"
+#    owner: "{{ ansible_user }}"
+#    group: "{{ ansible_user }}"
+#    mode: "{{ item.mode }}"
+#  with_items:
+#    - { path: '/home/{{ ansible_user }}/.ssh/ssh-git.key', mode: '0600' }
+#    - { path: '/home/{{ ansible_user }}/.ssh/ssh-git.pub', mode: '0644' }
+#  tags:
+#    - user
+#  #become: yes
+#  #become_user: "{{ ansible_user }}"
 
 
 - name: Validate local Git folder exists

@@ -1,29 +1,31 @@
 # Search and replace "_vm_01" with "_vm_0x"
 # Delete "/*" to uncomment the section and enable
-variable "vm_name_02" {
-  default = "Downloader02"
+variable "vm_name_01" {
+  default = "Plex"
 }
-variable "vm_ip_02" {
-  default = "10.11.14.32"
+variable "vm_ip_01" {
+  default = "10.11.14.30"
 }
 
 #===============================================================================
 # Clone VM
 #===============================================================================
 
-resource "vsphere_virtual_machine" "cloned_virtual_machine_02" {
-  name             = "TF_${var.vm_name_02}"
+resource "vsphere_virtual_machine" "cloned_virtual_machine" {
+  name             = "TF_${var.vm_name_01}"
   #name             = "TFDL01"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   folder           = vsphere_folder.folder.path
   guest_id         = data.vsphere_virtual_machine.template.guest_id
 
-  num_cpus                   = 2
+  cpu_share_level            = "high"
+  num_cpus                   = 4
   num_cores_per_socket       = 1
-  memory                     = 4096
+  memory                     = 8192
   boot_delay                 = 0
   force_power_off            = true
+
   #nested_hv_enabled          = true
   #hv_mode                    = "hvAuto"
   #wait_for_guest_net_timeout = 20
@@ -65,13 +67,13 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_02" {
     timeout       = 60
     customize {
       linux_options {
-        #host_name = "TF_${var.vm_name_02}"
+        #host_name = "TF_${var.vm_name_01}"
         #host_name = "TF-Downloader01"
-        host_name = var.vm_name_02
+        host_name = var.vm_name_01
         domain    = var.network_domain
       }
       network_interface {
-        ipv4_address = var.vm_ip_02
+        ipv4_address = var.vm_ip_01
         ipv4_netmask = var.network_mask
       }
       ipv4_gateway = var.network_gateway

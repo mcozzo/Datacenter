@@ -1,19 +1,17 @@
 ---
 
 - name: Configure and git clone
-  hosts: downloader
+  hosts:
+    - downloader
+    - plex
   roles:
     - docker-git
-  #tags:
-  #  - users-new
-  #  - never
   become: yes
 
 - name: Configure and run docker containers
-  hosts: downloader
+  hosts:
+    - downloader
+    - plex
   roles:
     - docker-restart
-  #tags:
-  #  - users-new
-  #  - never
   become: yes

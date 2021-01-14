@@ -1,0 +1,351 @@
+---
+
+- name: Include docker vars
+  include_vars:
+    file: ./group_vars/docker.yml
+
+# - name: Check if Docker Exists
+#    stat: path=/etc/init.d/{{service_name}}
+#    register: service_status
+#
+#  - name: Stop Service
+#    service: name={{service_name}} state=stopped
+#    when: service_status.stat.exists
+#    register: service_stopped
+
+- name: Make sure docker isn't running
+  systemd:
+    name: docker
+    enabled: yes
+    state: stopped
+  ignore_errors: yes
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+#  tags:
+#    - apt
+
+- name: Install applications
+  apt:
+    name:
+      # NFS
+      - nfs-common
+      # iSCSI
+      - open-iscsi
+      - lsscsi
+      - sg3-utils
+      - multipath-tools
+      - scsitools
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  tags:
+    - docker
+
+
+################################################################################
+# iSCSI
+# We need iSCSI before ocfs2
+# Validate with
+# sudo iscsiadm -m node
+################################################################################
+
+- name: Configure iSCSI IQN
+  lineinfile:
+    path: /etc/iscsi/initiatorname.iscsi
+    regexp: 'InitiatorName\=[a-zA-Z0-9:.-]+'
+    line: 'InitiatorName={{ item.value }}'
+  become: yes
+  when: item.key == inventory_hostname
+  #become_user: "{{ ansible_user }}"
+  #loop: "{{ docker_container_2_hosts|dictsort }}"
+  loop: "{{ docker_iscsi_iqn | dict2items }}"
+  notify:
+    - Restart iSCSI
+    - Restart Multipath
+  #tags:
+  #  - install
+  #  - update
+  #  - never
+
+- name: Place iSCSI config file
+  template:
+    src: etc-iscsi-iscsid.conf.j2
+    dest: /etc/iscsi/iscsid.conf
+    owner: root
+    group: root
+    mode: '600'
+  tags:
+    - user
+  become: yes
+  notify:
+  - Restart iSCSI
+  - Restart Multipath
+  #become_user: "{{ ansible_user }}"
+
+- name: Create array IQN data dir
+  file:
+    path: "/etc/iscsi/nodes/{{ netapp_iqn }}"
+    state: directory
+    mode: '0600'
+  become: yes
+
+- name: Create array IQN data interface dir
+  file:
+    path: "/etc/iscsi/nodes/{{ netapp_iqn }}/{{ item }},3260,1026"
+    state: directory
+    mode: '0600'
+  become: yes
+#- name: Run handlers
+#  meta: flush_handlers
+  loop: "{{ netapp_interfaces }}"
+
+- name: Place array IQN data interface config
+  template:
+    src: etc-iscsi-nodes-IQN-IP-default.j2
+#    dest: /home/mattcozzolino/resolv.conf
+    dest: "/etc/iscsi/nodes/{{ netapp_iqn }}/{{ item }},3260,1026/default"
+    owner: root
+    group: root
+    mode: '0600'
+  become: yes
+  notify:
+    #- Reboot host
+    - Restart iSCSI
+    - Restart Multipath
+  loop: "{{ netapp_interfaces }}"
+
+
+#- name: Disconnect iSCSI
+#  community.general.open_iscsi:
+#    #show_nodes: yes
+#    #discover: yes
+#    #auto_node_startup: yes
+#    login: no
+#    portal: 10.11.14.12
+
+#- name: restart iSCSI
+#  systemd:
+#    name: iscsid
+#    enabled: yes
+#    state: restarted
+#  #notify:
+#  #  - Reboot host
+#  tags:
+#    - docker
+#  become: yes
+#
+## Validate with
+## sudo iscsiadm -m node
+#- name: Discover iSCSI nodes
+#  community.general.open_iscsi:
+#    show_nodes: yes
+#    discover: yes
+#    login: yes
+#    auto_node_startup: yes
+#    #portal: 10.11.14.12
+#    portal: "{{ item }}"
+#  with_items:
+#    - 10.11.14.12
+#    - 10.11.14.13
+#    - 10.11.14.14
+#    - 10.11.14.15
+
+## Because it doesn't pickup a size change
+#- name: Re-scan existing iSCSI mounts
+#  shell: |
+#    iscsiadm -m node -R
+#  become: yes
+##  notify:
+##    - Reboot host
+
+################################################################################
+# multipath
+################################################################################
+
+- name: Place multipath config file
+  template:
+    src: etc-multipath.conf.j2
+#    dest: /home/mattcozzolino/resolv.conf
+    dest: /etc/multipath.conf
+    owner: root
+    group: root
+    mode: '644'
+  tags:
+    - user
+  become: yes
+  notify:
+  #- Reboot host
+  - Restart iSCSI
+  - Restart Multipath
+
+  #become_user: "{{ ansible_user }}"
+
+#- name: restart multipath
+#  systemd:
+#    name: multipathd
+#    enabled: yes
+#    state: restarted
+#  #notify:
+#  #  - Reboot host
+#  tags:
+#    - docker
+#  become: yes
+
+# Reboot because that's the only way i've gotten it to pickup iSCSI pathing.
+- name: Run handlers
+  meta: flush_handlers
+#- name: Restart because multipath is weird
+#  reboot:
+
+#- name: Flush multipath and reload
+#  shell: |
+#    multipath -r
+#  become: yes
+#  #notify:
+#  #  - Reboot host
+
+## Validate with
+## sudo iscsiadm -m node
+- name: Discover iSCSI nodes
+  community.general.open_iscsi:
+    #show_nodes: yes
+    #discover: yes
+    login: yes
+    #auto_node_startup: yes
+    target: "{{ netapp_iqn }}"
+    #portal: 10.11.14.12
+    portal: "{{ item }}"
+  loop: "{{ netapp_interfaces }}"
+  #with_items:
+  #  - 10.11.14.12
+  #  - 10.11.14.13
+  #  - 10.11.14.14
+  #  - 10.11.14.15
+
+
+
+################################################################################
+# Trident role needs to be configured on the storage system.
+# https://netapp-trident.readthedocs.io/en/stable-v20.10/docker/install/ndvp_ontap_config.html
+################################################################################
+#
+# # create a new Trident role. Perform on each vServer
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname DEFAULT -access none
+#
+# # grant common Trident permissions
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "event generate-autosupport-log" -access all
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "network interface" -access readonly
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "version" -access readonly
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "vserver" -access readonly
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "vserver nfs show" -access readonly
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "volume" -access all
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "snapmirror" -access all
+#
+# # grant ontap-san Trident permissions
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "vserver iscsi show" -access readonly
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "lun" -access all
+#
+# # grant ontap-nas-economy Trident permissions
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "vserver export-policy create" -access all
+# security login role create -vserver cozzo_iscsi -role trident_role -cmddirname "vserver export-policy rule create" -access all
+#
+# # create a new Trident user with Trident role
+# security login create -vserver cozzo_iscsi -username trident_user -role trident_role -application ontapi -authmethod password
+
+################################################################################
+# Configure trident
+################################################################################
+
+- name: Create /etc/netappdvp
+  file:
+    path: /etc/netappdvp/
+    state: directory
+    mode: '0755'
+
+- name: Install nfs tools
+  apt:
+    name:
+      - nfs-common
+    state: present
+    update_cache: yes
+    cache_valid_time: 3600
+  become: yes
+  notify:
+    #- Start docker on boot
+    - Reboot host
+
+- name: Place trident config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+  with_items:
+    - { src: "etc-netappdvp-ontap-nas.json.j2",   dst: "/etc/netappdvp/ontap-nas.json",   mode: "0644" }
+    - { src: "etc-netappdvp-ontap-iscsi.json.j2", dst: "/etc/netappdvp/ontap-iscsi.json", mode: "0644" }
+  #tags:
+  #  - never
+  #  - update
+  #  - install
+
+
+- name: Configure docker as service
+  systemd:
+    name: docker
+    enabled: yes
+    state: restarted
+  notify:
+    - Reboot host
+  tags:
+    - docker
+  become: yes
+
+#- name: Reboot host
+#  reboot:
+
+#- name: Install Trident Docker plugin
+#  command:
+#    argv:
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-iscsi netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-iscsi.json
+#      #- sleep 30
+#      #- docker plugin enable netapp:latest
+#  ignore_errors: yes
+#  become: yes
+
+# Really it's so that trident shows up as enabled after the reboot.
+- name: Pause for 5 minutes because... ?
+  pause:
+    minutes: 5
+
+- name: Install Trident Docker NFS plugin
+  command: docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+  ignore_errors: yes
+  become: yes
+
+- name: Install Trident Docker iSCSI plugin
+  command: docker plugin install --grant-all-permissions --alias netapp-iscsi netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-iscsi.json
+  ignore_errors: yes
+  become: yes
+
+- name: Run handlers
+  meta: flush_handlers
+
+
+#- name: Run Trident
+#  command: trident
+#  args:
+#    creates: --config=/etc/netappdvp/ontap-nas.json
+#  become: yes
