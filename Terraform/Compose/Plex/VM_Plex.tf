@@ -20,7 +20,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine" {
   guest_id         = data.vsphere_virtual_machine.template.guest_id
 
   cpu_share_level            = "high"
-  num_cpus                   = 4
+  num_cpus                   = 8
   num_cores_per_socket       = 1
   memory                     = 8192
   boot_delay                 = 0
