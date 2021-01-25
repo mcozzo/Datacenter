@@ -12,7 +12,7 @@ docker_container_2_hosts:
   #tautulli.cozzo.net:      downloader03.dc.cozzo.net
   ombi.cozzo.net:          downloader03.dc.cozzo.net
   #booksonic.cozzo.net:     downloader03.dc.cozzo.net
-  ##plex.cozzo.net:          plex.dc.cozzo.net
+  plex.cozzo.net:          plex.dc.cozzo.net
   #nginx.cozzo.net:         nginx.dc.cozzo.net
   #cacti.cozzo.net:         downloader03.dc.cozzo.net
   ##homeassistant.cozzo.net: 'downloader03.dc.cozzo.net'

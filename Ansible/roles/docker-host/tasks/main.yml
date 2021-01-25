@@ -19,6 +19,31 @@
 ##  tags:
 ##    - apt
 
+- name: "Add the user docker"
+  user:
+    name: docker
+    comment: "Docker service account"
+    state: present
+    uid: 1001
+    groups: wheel,sudo
+    #password: ""
+  notify:
+    - Reboot host
+# Generate passwords like this
+# https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
+# python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
+
+- name: "Add docker to wheel group"
+  user:
+    name: docker
+    groups: wheel
+    append: yes
+    shell: /bin/bash
+#  with_items: "{{ sudoers }}"
+  tags:
+    - user
+
+
 - name: Install docker & dependencies
   apt:
     name:

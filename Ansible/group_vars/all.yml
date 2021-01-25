@@ -6,6 +6,7 @@ ansible_user: svc-ansible
 ansible_python_interpreter: /usr/bin/python3
 host_key_checking: false
 #    ansible_ssh_pass=vagrant
+trident_password: "{{ vault_trident_password }}"
 
 dns_servers:
   - 10.11.14.4

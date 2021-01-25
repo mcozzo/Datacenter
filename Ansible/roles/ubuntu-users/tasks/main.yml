@@ -5,6 +5,7 @@
   group:
     name: wheel
     state: present
+    gid: 1001
   tags:
     - user
   become: yes

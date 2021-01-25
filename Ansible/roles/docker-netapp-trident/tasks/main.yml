@@ -4,6 +4,10 @@
   include_vars:
     file: ./group_vars/docker.yml
 
+- name: Include vault
+  include_vars:
+    file: ./group_vars/vault.yml
+
 # - name: Check if Docker Exists
 #    stat: path=/etc/init.d/{{service_name}}
 #    register: service_status
