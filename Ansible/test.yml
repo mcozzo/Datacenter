@@ -1,5 +1,5 @@
 ---
-# Run this after setting up the host. Pull new compose files and start
+# Run this to configure docker environment
 # Configures all rquired parts to run containers
 
 #- name: Configure storage
@@ -11,37 +11,36 @@
 #  #  - never
 #  become: yes
 
-- name: Configure and git clone
-  hosts:
-    - downloader
-    - plex
-    - dev
-  roles:
-    - docker-git
-  #tags:
-  #  - users-new
-  #  - never
-  become: yes
-
-#- name: Configure docker host
+#- name: Configure and git clone
 #  hosts:
 #    - downloader
 #    - plex
 #  roles:
-#    - docker-host
+#    - docker-git
 #  #tags:
 #  #  - users-new
 #  #  - never
 #  become: yes
 
-- name: Configure and run docker containers
+- name: Configure docker host
   hosts:
-    - downloader
-    - plex
+    #- downloader
+    #- plex
     - dev
   roles:
-    - docker-start
+    - docker-test
   #tags:
   #  - users-new
   #  - never
   become: yes
+
+#- name: Configure and run docker containers
+#  hosts:
+#    - downloader
+#    - plex
+#  roles:
+#    - docker-run
+#  #tags:
+#  #  - users-new
+#  #  - never
+#  become: yes

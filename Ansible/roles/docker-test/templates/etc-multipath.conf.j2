@@ -1,0 +1,19 @@
+defaults {
+    user_friendly_names yes
+    find_multipaths yes
+}
+blacklist {
+    devnode "^(ram|raw|loop|fd|md|dm-|sr|scd|st|sda)[0-9]*"
+}
+devices {
+  device {
+        vendor "NetApp"
+        product "LUN C-Mode"
+        fast_io_fail_tmo 10
+        path_grouping_policy "group_by_prio"
+        failback "immediate"
+        prio "alua"
+        hardware_handler "1 alua"
+        max_sectors_kb 4096
+    }
+}

@@ -13,7 +13,8 @@ variable "vm_template" {
   default = "TPL_Ubuntu_2004"
 }
 variable "network_name" {
-  default = "dvsDC01-014-Docker"
+  #default = "dvsDC01-014-Docker"
+  default = "NSX-014-Docker"
 }
 variable "network_domain" {
   default = "cozzo.net"

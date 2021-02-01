@@ -22,6 +22,7 @@ docker_iscsi_iqn:
   downloader02.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader02-dc-cozzo-net
   downloader03.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader03-dc-cozzo-net
   plex.dc.cozzo.net:         iqn.1993-08.org.debian:01:plex-dc-cozzo-net
+  test.dc.cozzo.net:         iqn.1993-08.org.debian:01:test-dc-cozzo-net
 
 netapp_iqn: iqn.1992-08.com.netapp:sn.0859bef84a0311ebb08600a09850869c:vs.5
 netapp_interfaces:
@@ -29,3 +30,7 @@ netapp_interfaces:
   - 10.11.14.13
   - 10.11.14.14
   - 10.11.14.15
+
+netapp_trident_plugins:
+  - netapp-iscsi
+  - netapp-nfs

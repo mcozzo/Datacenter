@@ -23,3 +23,7 @@ all:
       hosts:
         plex.dc.cozzo.net:
           ansible_host: 10.11.14.30
+    dev:
+      hosts:
+        test.dc.cozzo.net:
+          ansible_host: 10.11.14.41

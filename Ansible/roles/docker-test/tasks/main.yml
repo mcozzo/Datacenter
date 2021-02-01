@@ -1,0 +1,301 @@
+---
+
+- name: Include docker vars
+  include_vars:
+    file: ./group_vars/docker.yml
+
+- name: Include vault
+  include_vars:
+    file: ./group_vars/vault.yml
+
+# - name: Check if Docker Exists
+#    stat: path=/etc/init.d/{{service_name}}
+#    register: service_status
+#
+#  - name: Stop Service
+#    service: name={{service_name}} state=stopped
+#    when: service_status.stat.exists
+#    register: service_stopped
+
+
+################################################################################
+# Configure trident
+################################################################################
+
+#- name: Create /etc/netappdvp
+#  file:
+#    path: /etc/netappdvp/
+#    state: directory
+#    mode: '0755'
+#
+#- name: Install nfs tools
+#  apt:
+#    name:
+#      - nfs-common
+#    state: present
+#    update_cache: yes
+#    cache_valid_time: 3600
+#  become: yes
+##  notify:
+##    #- Start docker on boot
+##    - Reboot host
+#
+- name: Place trident config
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    mode: "{{ item.mode }}"
+    owner: root
+    group: root
+  with_items:
+    - { src: "etc-netappdvp-netapp-nas.json.j2",   dst: "/etc/netappdvp/netapp-nas.json",   mode: "0644" }
+    - { src: "etc-netappdvp-netapp-iscsi.json.j2", dst: "/etc/netappdvp/netapp-iscsi.json", mode: "0644" }
+  #tags:
+  #  - never
+  #  - update
+  #  - install
+
+#- name: Configure docker as service
+#  systemd:
+#    name: docker
+#    enabled: yes
+#    state: restarted
+#  #notify:
+#  #  - Reboot host
+#  tags:
+#    - docker
+#  become: yes
+
+#- name: Reboot host
+#  reboot:
+
+#- name: Install Trident Docker plugin
+#  command:
+#    argv:
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-iscsi netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-iscsi.json
+#      #- sleep 30
+#      #- docker plugin enable netapp:latest
+#  ignore_errors: yes
+#  become: yes
+
+## Really it's so that trident shows up as enabled after the reboot.
+#- name: Pause for 5 minutes because... ?
+#  pause:
+#    minutes: 5
+
+
+# Vars
+#netapp_trident_plugins:
+#  - netapp-iscsi
+#  - netapp-nfs
+
+- name: Check trident plugin
+  command: docker plugin ls
+  ignore_errors: yes
+  become: yes
+  register: trident_status
+
+# Result
+#ok: [downloader01] => {
+#    "msg": [
+#        "ID                  NAME                  DESCRIPTION                             ENABLED",
+#        "dd4e3449cc63        netapp-iscsi:latest   Trident - NetApp Docker Volume Plugin   true",
+#        "8831401ee2a2        netapp-nfs:latest     Trident - NetApp Docker Volume Plugin   true"
+#    ]
+#}
+#ok: [downloader02] => {
+#    "msg": [
+#        "ID                  NAME                  DESCRIPTION                             ENABLED",
+#        "088a1b379d4a        netapp-iscsi:latest   Trident - NetApp Docker Volume Plugin   true",
+#        "68762e02cd06        netapp-nfs:latest     Trident - NetApp Docker Volume Plugin   true"
+#    ]
+#}
+#ok: [downloader03] => {
+#    "msg": [
+#        "ID                  NAME                  DESCRIPTION                             ENABLED",
+#        "5de17fde0e55        netapp-iscsi:latest   Trident - NetApp Docker Volume Plugin   false"
+#    ]
+#}
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ trident_status.stdout_lines }}"
+
+- name: Debug2
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  loop: "{{ trident_status.stdout_lines }}"
+  loop_control:
+    extended: yes
+  when: ansible_loop.first == false
+
+- name: Define var
+  set_fact:
+    trident_status_list:
+      args: [] #List
+    #trident_status_list: {{ | list }} #Dict - Don't use this. https://docs.ansible.com/ansible/latest/collections/ansible/builtin/set_fact_module.html
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ trident_status_list }}"
+
+- name: Massage trident status
+  set_fact:
+    # Not working:
+    #trident_status_list: {{ trident_status_list + [ '{{ item |  }} ] }}
+    #trident_status_list: "{{ trident_status_list + [ item|upper ] }}"
+    #trident_status_list: '{{ trident_status_list + [ plugin: (item | regex_search("[a-z]*\-[a-z]*\:[a-z]*")), state = item | regex_search("[a-z]*$") ] }}'
+    #trident_status_list: '{{ trident_status_list | combine( ((item | regex_search("[a-z]*\-[a-z]*")) : (item | regex_search("[a-z]*$"))), list_merge="append" ) }}'
+    #trident_status_list: '{{ trident_status_list + [ (item | regex_search("[a-z]*\-[a-z]*")) = (item | regex_search("[a-z]*$")) ) }}'
+    trident_status_list: '{{ trident_status_list }} + thing : something{{ index }}'
+    # Working:
+    #trident_status_list: '{{ trident_status_list + [ dict( plugin = item | regex_search("[a-z]*\-[a-z]*\:[a-z]*"), state = item | regex_search("[a-z]*$") ) ] }}'
+    #trident_status_list: '{{ trident_status_list + [ dict( plugin = item | regex_search("[a-z]*\-[a-z]*"), state = item | regex_search("[a-z]*$") ) ] }}'
+  loop: "{{ trident_status.stdout_lines }}"
+  loop_control:
+    extended: yes
+    index_var: index
+  when: ansible_loop.first == false
+
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ trident_status_list }}"
+
+# Result - This is the one i've got working
+# trident_status_list: '{{ trident_status_list + [ dict( plugin = item | regex_search("[a-z]*\-[a-z]*"), state = item | regex_search("[a-z]*$") ) ] }}'
+#ok: [downloader01] => {
+#    "msg": [
+#        {
+#            "plugin": "netapp-iscsi",
+#            "state": "true"
+#        },
+#        {
+#            "plugin": "netapp-nfs",
+#            "state": "true"
+#        }
+#    ]
+#}
+#ok: [downloader02] => {
+#    "msg": [
+#        {
+#            "plugin": "netapp-iscsi",
+#            "state": "true"
+#        },
+#        {
+#            "plugin": "netapp-nfs",
+#            "state": "true"
+#        }
+#    ]
+#}
+#ok: [downloader03] => {
+#    "msg": [
+#        {
+#            "plugin": "netapp-iscsi",
+#            "state": "false"
+#        }
+#    ]
+#}
+
+# Result - This will probably be easier to use.
+#ok: [downloader01] => {
+#    "msg": [
+#        {
+#            "netapp-iscsi": "true",
+#            "netapp-nfs": "true"
+#        }
+#    ]
+#}
+#ok: [downloader02] => {
+#    "msg": [
+#        {
+#            "netapp-iscsi": "true",
+#            "netapp-nfs": "true"
+#        }
+#    ]
+#}
+#ok: [downloader03] => {
+#    "msg": [
+#        {
+#            "netapp-iscsi": "false",
+#        }
+#    ]
+#}
+
+# Ultimately this should install NFS/iSCSI plugin
+- name: Install Trident plugin
+  #command: "docker plugin install --grant-all-permissions --alias {{ item }} netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json"
+  ansible.builtin.debug:
+    msg: "I should install nfs"
+  #when: "'netapp-nfs' not in trident_status_list"
+  #when: "item not in trident_status_list.plugin"
+  #when: "'netapp-nfs' not in item.plugin"
+  #when: "(trident_status_list | selectattr('plugin', 'contains', 'netapp-nfs'))"
+  when: "(trident_status_list | selectattr('plugin', 'contains', item))"
+  #register: install_nfs = true
+  loop: "{{ netapp_trident_plugins }}"
+  #loop: "{{ trident_status_list }}"
+
+- name: Pause to let Trident come up.
+  pause:
+    minutes: 1
+
+# Probably want to re run the detect process to validate if it installed.
+# Maybe i'll create a different task list for install / enable
+
+# Ultimately this should enable NFS/iSCSI plugin if it's disabled
+- name: Enable Trident plugin
+  #command: "docker plugin enable {{ item }}"
+  ansible.builtin.debug:
+    msg: "I should enable nfs"
+  #when: "'netapp-nfs' not in trident_status_list"
+  #when: "item not in trident_status_list.plugin"
+  #when: "'netapp-nfs' not in item.plugin"
+  #when: "(trident_status_list | selectattr('plugin', 'contains', 'netapp-nfs'))"
+  #when: "(trident_status_list | selectattr('plugin', 'contains', item))"
+  #when: "item."
+  #register: install_nfs = true
+  #loop: "{{ netapp_trident_plugins }}"
+  loop: "{{ trident_status_list }}"
+
+
+
+#- name: Install Trident Docker plugin
+#  command:
+#    argv:
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+#      #- sleep 30
+#      - docker plugin install --grant-all-permissions --alias netapp-iscsi netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-iscsi.json
+#      #- sleep 30
+#      #- docker plugin enable netapp:latest
+#  ignore_errors: yes
+#  become: yes
+
+#- name: Install Trident Docker NFS plugin
+#  command: docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+#  ignore_errors: yes
+#  become: yes
+#
+#
+#- name: Install Trident Docker NFS plugin
+#  command: docker plugin install --grant-all-permissions --alias netapp-nfs netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-nas.json
+#  ignore_errors: yes
+#  become: yes
+#
+#- name: Install Trident Docker iSCSI plugin
+#  command: docker plugin install --grant-all-permissions --alias netapp-iscsi netapp/trident-plugin:19.10 config=/etc/netappdvp/ontap-iscsi.json
+#  ignore_errors: yes
+#  become: yes
+#
+#- name: Run handlers
+#  meta: flush_handlers
+
+
+#- name: Run Trident
+#  command: trident
+#  args:
+#    creates: --config=/etc/netappdvp/ontap-nas.json
+#  become: yes

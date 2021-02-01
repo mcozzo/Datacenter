@@ -6,6 +6,7 @@
   hosts:
     - downloader
     - plex
+    - dev
   #- nginx
   roles:
     - ubuntu-docker-storage

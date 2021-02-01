@@ -1,0 +1,16 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-nas",
+    "managementLIF": "10.11.14.10",
+    "dataLIF": "10.11.14.10",
+    "svm": "cozzo_svm",
+    "username": "trident_user",
+    "password": "{{ trident_password }}",
+    "aggregate": "cozzo_aggr2",
+    "nfsMountOptions": "rw,vers=4.2,rsize=1048576,wsize=1048576,hard,noatime,lookupcache=positive,timeo=600,retrans=2",
+    "defaults": {
+      "size": "10G",
+      "spaceReserve": "none",
+      "exportPolicy": "Docker"
+    }
+}

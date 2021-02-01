@@ -37,6 +37,7 @@
   hosts:
     - downloader
     - plex
+    - dev
   roles:
     - docker-stop
   #tags:

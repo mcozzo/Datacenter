@@ -80,4 +80,5 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_02" {
     }
   }
   tags = ["${data.vsphere_tag.tag.id}"]
+  #tags = ["${vsphere_tag.tag.id}"]
 }# */

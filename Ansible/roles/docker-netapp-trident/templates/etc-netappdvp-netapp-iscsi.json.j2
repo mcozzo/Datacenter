@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "storageDriverName": "ontap-san",
+    "managementLIF": "10.11.14.16",
+    "svm": "cozzo_iscsi",
+    "username": "trident_user",
+    "password": "{{ trident_password }}",
+    "aggregate": "cozzo_aggr2",
+    "igroupName": "docker",
+    "defaults": {
+      "size": "10G",
+      "spaceReserve": "none",
+      "fileSystemType": "ext4"
+    }
+}

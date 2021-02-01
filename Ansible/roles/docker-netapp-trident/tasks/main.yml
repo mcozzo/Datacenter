@@ -295,8 +295,10 @@
     owner: root
     group: root
   with_items:
-    - { src: "etc-netappdvp-ontap-nas.json.j2",   dst: "/etc/netappdvp/ontap-nas.json",   mode: "0644" }
-    - { src: "etc-netappdvp-ontap-iscsi.json.j2", dst: "/etc/netappdvp/ontap-iscsi.json", mode: "0644" }
+    - { src: "etc-netappdvp-ontap-nas.json.j2",    dst: "/etc/netappdvp/ontap-nas.json",    mode: "0644" }
+    - { src: "etc-netappdvp-ontap-iscsi.json.j2",  dst: "/etc/netappdvp/ontap-iscsi.json",  mode: "0644" }
+    - { src: "etc-netappdvp-netapp-nas.json.j2",   dst: "/etc/netappdvp/netapp-nas.json",   mode: "0644" }
+    - { src: "etc-netappdvp-netapp-iscsi.json.j2", dst: "/etc/netappdvp/netapp-iscsi.json", mode: "0644" }
   #tags:
   #  - never
   #  - update
