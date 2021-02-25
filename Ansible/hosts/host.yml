@@ -27,3 +27,19 @@ all:
       hosts:
         test.dc.cozzo.net:
           ansible_host: 10.11.14.41
+    docker_camp:
+      hosts:
+        docker00.camp.cozzo.net:
+          ansible_host: 10.21.2.10
+        docker01.camp.cozzo.net:
+          ansible_host: 10.21.2.11
+        docker02.camp.cozzo.net:
+          ansible_host: 10.21.2.12
+    docker_trident:
+      hosts:
+        downloader01.dc.cozzo.net:
+          ansible_host: 10.11.14.31
+        downloader02.dc.cozzo.net:
+          ansible_host: 10.11.14.32
+        downloader03.dc.cozzo.net:
+          ansible_host: 10.11.14.33

@@ -5,6 +5,7 @@
     - downloader
     - plex
     - dev
+    - docker_camp
   roles:
     - docker-git
   become: yes
@@ -14,6 +15,7 @@
     - downloader
     - plex
     - dev
+    - docker_camp
   roles:
     - docker-restart
   become: yes

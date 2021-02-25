@@ -105,7 +105,7 @@
   lineinfile:
     path: /etc/fstab
     regexp: '^ramdisk\s*/mnt/ramdisk\s*tmpfs\s*defaults,size=1G,x-gvfs-show\s*0\s*0'
-    line: 'ramdisk  /mnt/ramdisk  tmpfs  defaults,size=1G,x-gvfs-show  0  0'
+    line: 'ramdisk  /mnt/ramdisk  tmpfs  defaults,size=4G,x-gvfs-show  0  0'
     create: yes
   notify:
     - Reboot host

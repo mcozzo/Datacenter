@@ -38,6 +38,7 @@
     - downloader
     - plex
     - dev
+    - docker_camp
   roles:
     - docker-stop
   #tags:
