@@ -3,7 +3,7 @@
 # Get keys from https://ftp-master.debian.org/keys/
 - name: Update apt-keys
   apt_key:
-    url: https://ftp-master.debian.org/keys/archive-key-10.asc
+    url: https://ftp-master.debian.org/keys/archive-key-11.asc
     state: present
   tags:
     - apt
