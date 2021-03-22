@@ -9,19 +9,6 @@
     - apt
   become: yes
 
-#- name: Install virt-sysprep
-#  apt:
-#    name: open-vm-tools
-#    state: present
-##    upgrade: safe
-#    update_cache: yes
-#    cache_valid_time: 3600
-#  tags:
-#    - apt
-#    - sysprep
-##  notify:
-##    - Reboot host
-
 - name: Install open vm tools
   apt:
     name: open-vm-tools
@@ -35,41 +22,124 @@
 #  notify:
 #    - Reboot host
 
-# https://kb.vmware.com/s/article/56409
-- name: Set guest customization (tmp.conf)
-  lineinfile:
-    path: /usr/lib/tmpfiles.d/tmp.conf
-    regexp: 'D\s\/tmp\s1777\sroot\sroot\s-'
-    line: '#D /tmp 1777 root root -'
-  tags:
-    - guest
-    - sysprep
-
-# https://kb.vmware.com/s/article/56409
-- name: Set guest customization (open-vm-tools.service )
-  lineinfile:
-    path: /lib/systemd/system/open-vm-tools.service
-    insertafter: '\[Unit\]'
-    line: 'After=dbus.service'
-  tags:
-    - guest
-    - sysprep
-
-##http://www.diigo.com/annotated/5d5c60dcd2ffc7eb5bbe1f2e5f224a33
-#- name: Delte /etc/udev/rules.d/70-persistent-net.rules
-#  file:
-#    path: /etc/udev/rules.d/70-persistent-net.rules
-#    state: absent
+#################################################################################
+## This is supposed to kick it back to the perl customization process.
+## It's not working.
+#################################################################################
 #
-## https://github.com/vmware/open-vm-tools/issues/453
-#- name: Delte /etc/udev/rules.d/70-persistent-net.rules
-#  file:
-#    path: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+#- name: Install perl
+#  apt:
+#    name: perl
+#    state: present
+##    upgrade: safe
+#    update_cache: yes
+#    cache_valid_time: 3600
+#  tags:
+#    - apt
+#    - sysprep
+#
+## https://communities.vmware.com/t5/VMware-vCenter-Discussions/Ubuntu-20-04-Customization-Profile-Error/m-p/1874080#M28402
+#- name: Remove cloud-init
+#  apt:
+#    name: cloud-init
 #    state: absent
+#    #upgrade: safe
+#    #update_cache: yes
+#    cache_valid_time: 3600
+#  tags:
+#    - apt
+#    - sysprep
+##  notify:
+##    - Reboot host
+#
+#- name: Clean cloud-init directory
+#  file:
+#    path: "/etc/cloud"
+#    state: absent
+#  become: yes
+#
+## https://kb.vmware.com/s/article/56409
+#- name: Set guest customization (tmp.conf)
+#  lineinfile:
+#    path: /usr/lib/tmpfiles.d/tmp.conf
+#    regexp: 'D\s\/tmp\s1777\sroot\sroot\s-'
+#    line: '#D /tmp 1777 root root -'
+#  tags:
+#    - guest
+#    - sysprep
+#
+## https://kb.vmware.com/s/article/56409
+## https://kb.vmware.com/s/article/59687
+#- name: Set guest customization (open-vm-tools.service )
+#  lineinfile:
+#    path: /lib/systemd/system/open-vm-tools.service
+#    insertafter: '\[Unit\]'
+#    line: 'After=dbus.service'
+#  tags:
+#    - guest
+#    - sysprep
+
+################################################################################
+# Or, your supposed to do the same thing with cloud-init
+# VMware cloud init
+# https://kb.vmware.com/s/article/59557
+# https://kb.vmware.com/s/article/80934
+################################################################################
+
+- name: Install cloud-init
+  apt:
+    name: cloud-init
+    state: present
+#    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+    - sysprep
+
+# https://kb.vmware.com/s/article/59557
+- name: Enable Cloud-init
+  lineinfile:
+    path: /etc/cloud/cloud.cfg
+    insertafter: EOF
+    line: 'disable_vmware_customization: false'
+  tags:
+    - guest
+    - sysprep
+
+# For step 3 under resolution use the following KB
+# https://kb.vmware.com/s/article/80934
+- name: Clean cloud-init stuff
+  file:
+    path: "/etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg"
+    state: absent
+  become: yes
+
+# https://kb.vmware.com/s/article/80934
+- name: Clean cloud-init stuff
+  file:
+    path: "/etc/cloud/cloud.cfg.d/99-installer.cfg"
+    state: absent
+  become: yes
+#http://www.diigo.com/annotated/5d5c60dcd2ffc7eb5bbe1f2e5f224a33
+- name: Delte /etc/udev/rules.d/70-persistent-net.rules
+  file:
+    path: /etc/udev/rules.d/70-persistent-net.rules
+    state: absent
+
+# https://github.com/vmware/open-vm-tools/issues/453
+- name: Delte /etc/udev/rules.d/70-persistent-net.rules
+  file:
+    path: /etc/cloud/cloud.cfg.d/subiquity-disable-cloudinit-networking.cfg
+    state: absent
+
+################################################################################
+# Common host items. These need to be done regardless
+################################################################################
 
 ##/etc/os-release
 ##/etc/issue
-#- name: "Change version to 18.04"
+#- name: "Hack the planet! Change version to 18.04 - This is dumb"
 #  replace:
 #    #path: /etc/os-release
 #    path: "{{ item }}"
@@ -80,41 +150,51 @@
 #    - "/etc/os-release"
 #    - "/etc/issue"
 
-# https://communities.vmware.com/t5/VMware-vCenter-Discussions/Ubuntu-20-04-Customization-Profile-Error/m-p/1874080#M28402
-- name: Remove cloud-init
-  apt:
-    name: cloud-init
-    state: absent
-    #upgrade: safe
-    #update_cache: yes
-    cache_valid_time: 3600
-  tags:
-    - apt
-    - sysprep
-#  notify:
-#    - Reboot host
-
-- name: Clean cloud-init directory
-  file:
-    path: "/etc/cloud"
-    state: absent
-  become: yes
-
-## Remove /etc/machine-id
+## Remove Machine-ID
 #- name: Delte /etc/machine-id
 #  file:
 #    path: /etc/machine-id
 #    state: absent
 
+################################################################################
+# Remove Machine-ID
+################################################################################
+- name: Clear /etc/machine-id
+  lineinfile:
+    regexp: "[a-z0-9]+"
+    path: /etc/machine-id
+    state: absent
+  become: yes
+  tags:
+    - guest
+    - sysprep
+
+- name: Delte /var/lib/dbus/machine-id
+  file:
+    path: /var/lib/dbus/machine-id
+    state: absent
+  become: yes
+
+################################################################################
+# SSH host keys
+# https://blog.digitalocean.com/avoid-duplicate-ssh-host-keys/
+################################################################################
+
+- name: Find ssh_keys /etc/ssh/ssh_host_*
+  find:
+    paths: /etc/ssh/
+    patterns: ssh_host_*
+  register: files_to_delete
+
+- name: Delete ssh_keys /etc/ssh/ssh_host_*
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ files_to_delete.files }}"
+  become: yes
+
 #- name: Shut down the machine
 #  community.general.shutdown:
-
-## Strip SSH host keys
-## https://blog.digitalocean.com/avoid-duplicate-ssh-host-keys/
-#- name: Delte /etc/ssh/ssh_host_*
-#  file:
-#    path: /etc/ssh/ssh_host_*
-#    state: absent
 
 #- name: Shutdown hosts
 #  command: /sbin/shutdown -h now
