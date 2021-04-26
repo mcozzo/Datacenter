@@ -33,17 +33,8 @@ variable "vsphere_folder" { default = "docker" }
 variable "vm_template" {
   default = "TPL_Ubuntu_2004-version"
 }
-variable "network_name" {
-  default = "V12-Servers"
-}
 variable "network_domain" {
   default = "cozzo.net"
-}
-variable "network_gateway" {
-  default = "10.21.2.1"
-}
-variable "network_mask" {
-  default = "24"
 }
 variable "module_folder" {
   default = "Camp"
@@ -51,6 +42,29 @@ variable "module_folder" {
 variable "dns_servers" {
   default = ["10.11.14.4", "10.11.14.5"]
 }
+
+# MGMT Network
+variable "network_mgmt" {
+  default = "V10-MGMT"
+}
+variable "network_mgmt_gateway" {
+  default = "10.21.0.1"
+}
+variable "network_mgmt_mask" {
+  default = "24"
+}
+
+# Server network
+variable "network_servers" {
+  default = "V12-Servers"
+}
+variable "network_servers_gateway" {
+  default = "10.21.2.1"
+}
+variable "network_servers_mask" {
+  default = "24"
+}
+
 
 
 #===============================================================================

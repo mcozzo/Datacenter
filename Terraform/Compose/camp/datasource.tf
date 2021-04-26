@@ -35,13 +35,22 @@ resource "vsphere_folder" "folder" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_network" "network" {
+data "vsphere_network" "servers" {
   #name          = "${var.class_name}_POD${count.index+1}-VDI"
-  name          = var.network_name
-  #name          = data.nsxt_policy_segment_realization.VDI[count.index].network_name
+  name          = var.network_servers
+  #name          = data.nsxt_policy_segment_realization.VDI[count.index].network_servers
   datacenter_id = data.vsphere_datacenter.dc.id
   #depends_on     = [data.nsxt_policy_segment_realization.VDI]
 }
+
+data "vsphere_network" "mgmt" {
+  #name          = "${var.class_name}_POD${count.index+1}-VDI"
+  name          = var.network_mgmt
+  #name          = data.nsxt_policy_segment_realization.VDI[count.index].network_servers
+  datacenter_id = data.vsphere_datacenter.dc.id
+  #depends_on     = [data.nsxt_policy_segment_realization.VDI]
+}
+
 
 #===============================================================================
 # Realize tags

@@ -34,7 +34,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_02" {
   firmware  = data.vsphere_virtual_machine.template.firmware
 
   network_interface {
-    network_id   = data.vsphere_network.network.id
+    network_id   = data.vsphere_network.servers.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
@@ -74,9 +74,9 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_02" {
       }
       network_interface {
         ipv4_address = var.vm_ip_02
-        ipv4_netmask = var.network_mask
+        ipv4_netmask = var.network_servers_mask
       }
-      ipv4_gateway = var.network_gateway
+      ipv4_gateway = var.network_servers_gateway
       dns_server_list = var.dns_servers
       #dns_suffix_list = var.network_domain
     }

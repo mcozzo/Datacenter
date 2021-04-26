@@ -1,19 +1,19 @@
 # Search and replace "_vm_01" with "_vm_0x"
 # Delete "/*" to uncomment the section and enable
-variable "vm_name_01" {
-  default = "docker01"
+variable "vm_name_03" {
+  default = "LogCollector"
 }
-variable "vm_ip_01" {
-  default = "10.21.2.11"
+variable "vm_ip_03" {
+  default = "10.21.0.10"
 }
 
 #===============================================================================
 # Clone VM
 #===============================================================================
 
-resource "vsphere_virtual_machine" "cloned_virtual_machine_01" {
-  name             = "TF_${var.vm_name_01}"
-  #name             = "TFDL01"
+resource "vsphere_virtual_machine" "cloned_virtual_machine_03" {
+  name             = "TF_${var.vm_name_03}"
+  #name             = "TFDL03"
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id     = data.vsphere_datastore.datastore.id
   folder           = vsphere_folder.folder.path
@@ -34,7 +34,7 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_01" {
   firmware  = data.vsphere_virtual_machine.template.firmware
 
   network_interface {
-    network_id   = data.vsphere_network.servers.id
+    network_id   = data.vsphere_network.mgmt.id
     adapter_type = data.vsphere_virtual_machine.template.network_interface_types[0]
   }
 
@@ -67,16 +67,16 @@ resource "vsphere_virtual_machine" "cloned_virtual_machine_01" {
     timeout       = 60
     customize {
       linux_options {
-        #host_name = "TF_${var.vm_name_01}"
-        #host_name = "TF-Downloader01"
-        host_name = var.vm_name_01
+        #host_name = "TF_${var.vm_name_03}"
+        #host_name = "TF-Downloader03"
+        host_name = var.vm_name_03
         domain    = var.network_domain
       }
       network_interface {
-        ipv4_address = var.vm_ip_01
-        ipv4_netmask = var.network_servers_mask
+        ipv4_address = var.vm_ip_03
+        ipv4_netmask = var.network_mgmt_mask
       }
-      ipv4_gateway = var.network_servers_gateway
+      ipv4_gateway = var.network_mgmt_gateway
       dns_server_list = var.dns_servers
       #dns_suffix_list = var.network_domain
     }
