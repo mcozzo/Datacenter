@@ -39,6 +39,7 @@
     - plex
     - dev
     - docker_camp
+    - docker_md
   roles:
     - docker-stop
   #tags:

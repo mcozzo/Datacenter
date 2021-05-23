@@ -17,6 +17,7 @@
     - plex
     - dev
     - docker_camp
+    - docker_md
   roles:
     - docker-git
   #tags:
@@ -41,6 +42,7 @@
     - plex
     - dev
     - docker_camp
+    - docker_md
   roles:
     - docker-start
   #tags:

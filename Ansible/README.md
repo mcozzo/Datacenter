@@ -29,7 +29,7 @@ This should prepare an Ubuntu VM template.
 ```bash
 # Initial install, use the build account, and then clean up.
 # Run service account creation
-ansible-playbook -i x.x.x.x, tpl-sysprep-0-cleaninstall.yml -e "ansible_ssh_user=usr-build" -K
+ansible-playbook -i x.x.x.x, tpl-sysprep-0-cleaninstall.yml -e "ansible_user=usr-build" -K
 # Use this play to install whatever else is needed in the template
 ansible-playbook -i x.x.x.x, tpl-sysprep-1-apps.yml
 # install other things and sysprep

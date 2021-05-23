@@ -28,6 +28,7 @@
     - plex
     - docker_camp
     - dev
+    - docker_md
   roles:
     - docker-host
   #tags:

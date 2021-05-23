@@ -1,0 +1,70 @@
+---
+# This playbook contains common handlers that can be called in "setup" tasks.
+
+# notify: Reboot host
+- name: Reboot host
+  reboot:
+
+# iSCSI
+
+- name: Restart iSCSI
+  systemd:
+    name: iscsid
+    enabled: yes
+    state: restarted
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  become: yes
+
+# Validate with
+# sudo iscsiadm -m node
+- name: Discover iSCSI
+  community.general.open_iscsi:
+    show_nodes: yes
+    discover: yes
+    login: yes
+    auto_node_startup: yes
+    #portal: 10.11.14.12
+    portal: "{{ item }}"
+  become: yes
+  with_items:
+    - 10.11.14.12
+    - 10.11.14.13
+    - 10.11.14.14
+    - 10.11.14.15
+
+- name: Reconfigure ocfs2
+  #command: "DEBCONF_DB_OVERRIDE='File {/var/cache/debconf/config.dat}' dpkg-reconfigure -f noninteractive ocfs2-tools"
+  command: dpkg-reconfigure -f noninteractive ocfs2-tools
+  #command: dpkg-reconfigure ocfs2-tools
+  #command: echo 'hello world'
+  become: yes
+  become_user: root
+
+- name: Restart o2cb service
+  command: echo 'hello world'
+#  systemd:
+#    name: "{{ item }}"
+#    enabled: yes
+#    state: restarted
+#  become: yes
+#  with_items:
+#    - o2cb
+#    - ocfs2
+
+# Check status with
+# sudo o2cb cluster-status
+- name: Register o2cb cluster
+  shell: "{{ item }}"
+  become: yes
+  with_items:
+    - "o2cb register-cluster docker"
+    - "o2cb start-heartbeat docker"
+    #- "update-rc.d o2cb enable"
+    #- "update-rc.d ocfs2 enable"
+    #- "sudo o2cb add-heartbeat docker /dev/mapper/3600a098052586455473f515454587479"
+    #- "echo 'hello world'"
+#  notify:
+#    - Reboot host

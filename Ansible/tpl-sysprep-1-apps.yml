@@ -1,8 +1,19 @@
 ---
 # Run this after a clean install
 
-- name: Apt
-  hosts: all
+- name: Apt ubuntu
+  hosts:
+    - raspberry_pi
+  roles:
+    - apt-upgrade
+  #tags:
+  #  - sysprep
+  #  #- never
+  become: yes
+
+- name: Apt vmtools
+  hosts:
+    - virtual_machines
   roles:
     - apt-upgrade
   #tags:

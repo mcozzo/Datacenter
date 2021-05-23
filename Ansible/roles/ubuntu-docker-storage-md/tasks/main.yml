@@ -1,0 +1,86 @@
+---
+# Mount NFS nodes for docker
+# Stand up o2cb and setup clustering
+# Connect to iSCSI shared datastore
+
+- name: Include docker vars
+  include_vars:
+    file: ./group_vars/docker.yml
+
+- name: Set timezone to America/Los_Angeles
+  community.general.timezone:
+    name: America/Los_Angeles
+
+- name: Make sure docker isn't running
+  systemd:
+    name: docker
+    enabled: no
+    state: stopped
+  #notify:
+  #  - Reboot host
+  tags:
+    - docker
+  ignore_errors: yes
+  become: yes
+
+- name: Update apt packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+#  tags:
+#    - apt
+
+#- name: Install applications
+#  apt:
+#    name:
+#      - nfs-common
+#      #- open-iscsi
+#      ##- iscsiadm
+#      #- multipath-tools
+#      #- ocfs2-tools
+#    state: present
+#    update_cache: yes
+#    cache_valid_time: 3600
+#  become: yes
+#  tags:
+#    - docker
+
+################################################################################
+# Mounts
+################################################################################
+
+- name: Create common Mounts
+  mount:
+    path: "{{ item.path }}"
+    src:  "{{ item.src }}"
+    fstype: "{{ item.type }}"
+    #opts: "{{ item.opts }}"
+    state: mounted
+  with_items:
+    - { src: "/dev/sda1", path: "/mnt/usb", type: "ext4", opts: "rw,realtime" }
+    #- { src: "10.11.14.10:/media",    path: "/mnt/media" }
+    #- { src: "10.11.14.10:/docker",   path: "/mnt/docker" }
+    #- { src: "10.11.14.10:/software", path: "/mnt/software" }
+    #- { src: "10.11.14.10:/download", path: "/mnt/download" }
+    #- { src: "/dev/mapper/3600a098052586455473f515454587479", path: "/mnt/dockeriscsi" }
+
+- name: USB Folders
+  file:
+    path: "{{ item.path }}"
+    owner: "docker"
+    group: "wheel"
+    mode: "{{ item.mode }}"
+    state: "directory"
+    recurse: "yes"
+  with_items:
+    - { path: '/mnt/usb/docker', mode: '0774' }
+  tags:
+    - user
+
+- name: Create links
+  ansible.builtin.file:
+    src: /mnt/usb/docker
+    dest: /mnt/docker
+    owner: "docker"
+    group: "wheel"
+    state: link

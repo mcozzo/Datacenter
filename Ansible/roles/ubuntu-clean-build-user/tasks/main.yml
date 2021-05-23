@@ -13,3 +13,10 @@
   #tags:
   #  - never
   #  - cleanuser
+
+- name: "Remove the build account"
+  user:
+    name: "ubuntu"
+    comment: "Delete build user"
+    state: absent
+    remove: yes

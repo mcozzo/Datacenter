@@ -43,3 +43,20 @@ all:
           ansible_host: 10.11.14.32
         downloader03.dc.cozzo.net:
           ansible_host: 10.11.14.33
+    docker_md:
+      hosts:
+        docker00.md.cozzo.net:
+          ansible_host: 10.21.1.219
+    virtual_machines:
+      hosts:
+        downloader01.dc.cozzo.net:
+        downloader02.dc.cozzo.net:
+        downloader03.dc.cozzo.net:
+        plex.dc.cozzo.net:
+        nginx.dc.cozzo.net:
+        docker01.camp.cozzo.net:
+        docker02.camp.cozzo.net:
+    raspberry_pi:
+      hosts:
+        docker00.camp.cozzo.net:
+        docker00.md.cozzo.net:

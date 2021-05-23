@@ -27,6 +27,19 @@
   notify:
     - Reboot host
 
+- name: Open vm tools
+  apt:
+    name: open-vm-tools
+    state: present
+#    upgrade: safe
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+    - apt
+    - sysprep
+#  notify:
+#    - Reboot host
+
 - name: Apt cleanup
   apt:
     purge: yes

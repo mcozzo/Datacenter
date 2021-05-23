@@ -26,6 +26,17 @@
   #  - never
   become: yes
 
+- name: Configure storage MD
+  hosts:
+    - docker_md
+  #- nginx
+  roles:
+    - ubuntu-docker-storage-md
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
 
 #- name: Configure and git clone
 #  hosts: downloader

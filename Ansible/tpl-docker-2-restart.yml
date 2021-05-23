@@ -6,6 +6,7 @@
     - plex
     - dev
     - docker_camp
+    - docker_md
   roles:
     - docker-git
   become: yes
@@ -16,6 +17,7 @@
     - plex
     - dev
     - docker_camp
+    - docker_md
   roles:
     - docker-restart
   become: yes
