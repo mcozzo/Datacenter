@@ -81,6 +81,6 @@
   ansible.builtin.file:
     src: /mnt/usb/docker
     dest: /mnt/docker
-    owner: "docker"
+    owner: "1010"
     group: "wheel"
     state: link

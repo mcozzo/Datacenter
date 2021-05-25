@@ -46,7 +46,7 @@ all:
     docker_md:
       hosts:
         docker00.md.cozzo.net:
-          ansible_host: 10.21.1.219
+          ansible_host: 10.21.1.220
     virtual_machines:
       hosts:
         downloader01.dc.cozzo.net:
