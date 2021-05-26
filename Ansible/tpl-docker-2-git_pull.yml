@@ -1,0 +1,12 @@
+---
+
+- name: Configure and git clone
+  hosts:
+    - downloader
+    - plex
+    - dev
+    - docker_camp
+    - docker_md
+  roles:
+    - docker-git
+  become: yes

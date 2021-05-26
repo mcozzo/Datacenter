@@ -1,0 +1,27 @@
+---
+
+# Common users for the environment
+# Generate passwords like this
+# https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
+# python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
+regenerate_keys: false
+
+user_list:
+  - name: docker
+    comment: Docker user
+    state: present
+    uid: 1001
+    groups: wheel,sudo
+    password: ""
+  - name: svc-ansible
+    comment: "Service account for ansible"
+    state: present
+    uid: 1010
+    groups: wheel,sudo
+    password: "$6$Ee0f.1oA9LNZ.Uwm$/blcNQudJkul1ZMKn9Ip5D/V6Ogto4YMAPfpaWnddldAkpHO2a9lGzt1.o.wsmQA5hK63KF/YZ9BZ2Q1lO.uR/"
+  - name: "mattcozzolino"
+    comment: "Almighty owner and operator of all things computer"
+    state: present
+    uid: 1069
+    groups: wheel,sudo
+    password: "$6$GqKbi/j08TECVS4T$6uS9FvJ/486JeZxaBUDL0VXTL.hmaxwAdnMifZtc2DZAsCmVrHK6vFVC2FGGSfmrBpN0W8veUf1eEeSAWgXRK0"

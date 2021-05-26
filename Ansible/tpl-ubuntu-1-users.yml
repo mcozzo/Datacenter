@@ -1,0 +1,13 @@
+---
+# Apt updates
+# restart the host
+
+- name: Update users
+  hosts:
+    - all
+  roles:
+    - ubuntu-users
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes

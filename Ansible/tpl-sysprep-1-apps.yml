@@ -15,7 +15,7 @@
   hosts:
     - virtual_machines
   roles:
-    - apt-upgrade
+    - apt-vmtools
   #tags:
   #  - sysprep
   #  #- never

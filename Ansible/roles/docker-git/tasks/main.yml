@@ -24,8 +24,10 @@
 #  notify:
 #    - Reboot host
   with_items:
-    - { src: "../../vars/ssh-git.key", dst: "/home/{{ ansible_user }}/.ssh/ssh-git.key", mode: "0600" }
-    - { src: "../../vars/ssh-git.pub", dst: "/home/{{ ansible_user }}/.ssh/ssh-git.pub", mode: "0644" }
+    #- { src: "../../vars/ssh-git.key",    dst: "/home/{{ ansible_user }}/.ssh/ssh-git.key", mode: "0600" }
+    #- { src: "../../vars/ssh-git.pub",    dst: "/home/{{ ansible_user }}/.ssh/ssh-git.pub", mode: "0644" }
+    - { src: "../../vars/ssh-git-ro.key", dst: "/home/{{ ansible_user }}/.ssh/ssh-git-ro.key", mode: "0600" }
+    - { src: "../../vars/ssh-git-ro.pub", dst: "/home/{{ ansible_user }}/.ssh/ssh-git-ro.pub", mode: "0644" }
   #with_items:
   #  - { path: '/home/{{ ansible_user }}/.ssh/id_rsa',     mode: '0600' }
   #  - { path: '/home/{{ ansible_user }}/.ssh/id_rsa.pub', mode: '0644' }
@@ -70,7 +72,7 @@
     version: HEAD
     force: yes
     remote: origin
-    key_file: "/home/{{ ansible_user }}/.ssh/ssh-git.key"
+    key_file: "/home/{{ ansible_user }}/.ssh/ssh-git-ro.key"
   become: yes
   become_user: "{{ ansible_user }}"
 #  tags:

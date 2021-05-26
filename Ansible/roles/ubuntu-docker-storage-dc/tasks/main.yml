@@ -49,16 +49,15 @@
 # NFS
 ################################################################################
 
-- name: Create common nfs mounts
+- name: Create common Mounts
   mount:
     path: "{{ item.path }}"
     src:  "{{ item.src }}"
-    fstype: nfs
-    #opts:
+    fstype: "{{ item.type }}"
+    opts: "{{ item.opts }}"
     state: mounted
   with_items:
-    - { src: "10.11.14.10:/media",    path: "/mnt/media" }
-    - { src: "10.11.14.10:/docker",   path: "/mnt/docker" }
-    - { src: "10.11.14.10:/software", path: "/mnt/software" }
-    - { src: "10.11.14.10:/download", path: "/mnt/download" }
-    #- { src: "/dev/mapper/3600a098052586455473f515454587479", path: "/mnt/dockeriscsi" }
+    - { src: "10.11.14.10:/media",    path: "/mnt/media",    type: "nfs4", opts: "defaults"  }
+    - { src: "10.11.14.10:/docker",   path: "/mnt/docker",   type: "nfs4", opts: "defaults"  }
+    - { src: "10.11.14.10:/software", path: "/mnt/software", type: "nfs4", opts: "defaults"  }
+    - { src: "10.11.14.10:/download", path: "/mnt/download", type: "nfs4", opts: "defaults"  }

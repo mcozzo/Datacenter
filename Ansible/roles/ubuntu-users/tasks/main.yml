@@ -1,6 +1,11 @@
 ---
 # This playbook contains common plays that will be run on all nodes.
 
+- name: Include user list
+  include_vars:
+    file: ./group_vars/users.yml
+
+
 - name: "Make sure we have a 'wheel' group"
   group:
     name: wheel
@@ -18,177 +23,148 @@
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: visudo -cf %s
 
-#- name: Add sudoers users to wheel group
-#  user:
-#    name: "{{ item }}"
-#    groups: wheel
-#    append: yes
-#  with_items: "{{ sudoers }}"
+#- name: debug
+#  debug:
+#    #msg: "{{ item.1.resource_value }}"
+#    msg: "{{ item.name }}"
+#    #comment:  "{{ item.comment }}"
+#    #state:    "{{ item.state }}"
+#    #uid:      "{{ item.uid }}"
+#    #groups:   "{{ item.groups }}"
+#    #password: "{{ item.password }}"
+#  tags:
+#    - always
+#  loop: "{{ user_list }}"
 
-- name: "Add the user {{ ansible_user }}"
+- name: "Add/remove users"
   user:
-    name: "{{ ansible_user }}"
-    comment: "Ansible service account"
-    state: present
-    uid: 1010
-    groups: wheel,sudo
-    password: "$6$Ee0f.1oA9LNZ.Uwm$/blcNQudJkul1ZMKn9Ip5D/V6Ogto4YMAPfpaWnddldAkpHO2a9lGzt1.o.wsmQA5hK63KF/YZ9BZ2Q1lO.uR/"
+    name:     "{{ item.name }}"
+    comment:  "{{ item.comment }}"
+    state:    "{{ item.state }}"
+    uid:      "{{ item.uid }}"
+    groups:   "{{ item.groups }}"
+    password: "{{ item.password }}"
   notify:
-    - Reboot host
-# Generate passwords like this
-# https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
-# python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
+    #- Reboot host
+  loop: "{{ user_list }}"
 
-- name: "Add {{ ansible_user }} to wheel group"
-  user:
-    name: "{{ ansible_user }}"
-    groups: wheel
-    append: yes
-    shell: /bin/bash
-#  with_items: "{{ sudoers }}"
-  tags:
-    - user
+- name: Clean home dir if needed
+  file:
+    #path: "~/.ssh"
+    path: "/home/{{ item.name }}"
+    state: absent
+  when: item.state == "absent"
+  loop: "{{ user_list }}"
 
 - name: Create '~/.ssh' if it does not exist
   file:
     #path: "~/.ssh"
-    path: "/home/{{ ansible_user }}/.ssh"
+    path: "/home/{{ item.name }}/.ssh"
     state: directory
     mode: '0700'
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  when: item.state == "present"
   #become: yes
   #become_user: "{{ ansible_user }}"
+  loop: "{{ user_list }}"
 
-- name: "Place authorized keys - {{ ansible_user }} /.ssh/authorized_keys"
+- name: Create '~/.ssh/authorized_keys' if it does not exist
   template:
     src: ssh_authorized_keys.j2
-    #dest: "~/.ssh/authorized_keys"
-    dest: "/home/{{ ansible_user }}/.ssh/authorized_keys"
-    mode: '0600'
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-  tags:
-    - user
-  #become: yes
-  #become_user: "{{ ansible_user }}"
-
-- name: "Check for {{ ansible_user }} id_rsa keys"
-  stat:
-    path: "/home/{{ ansible_user }}/.ssh/id_rsa"
-  register: ssh_keys
-  tags:
-    - user
-    - ssh
-  #become: yes
-  #become_user: "{{ ansible_user }}"
-
-- name: "Generate keypair for user "
-  openssh_keypair:
-    path: "/home/{{ ansible_user }}/.ssh/id_rsa"
-    size: 2048
-    type: rsa
-  when: ssh_keys.stat.exists == false
-  tags:
-    - user
-  #become: yes
-  #become_user: "{{ ansible_user }}"
-
-- name: SSH key settings, chmod & chown ~/.ssh/id_rsa
-  file:
-    path: "{{ item.path }}"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: "{{ item.mode }}"
-  with_items:
-    - { path: '/home/{{ ansible_user }}/.ssh/id_rsa',     mode: '0600' }
-    - { path: '/home/{{ ansible_user }}/.ssh/id_rsa.pub', mode: '0644' }
-  tags:
-    - user
-  #become: yes
-  #become_user: "{{ ansible_user }}"
-
-########
-# Add user: mattcozzolino
-- name: "Add the user mattcozzolino"
-  user:
-    name: "mattcozzolino"
-    comment: ""
-    state: present
-    uid: 1069
-    groups: wheel,sudo
-    password: "$6$GqKbi/j08TECVS4T$6uS9FvJ/486JeZxaBUDL0VXTL.hmaxwAdnMifZtc2DZAsCmVrHK6vFVC2FGGSfmrBpN0W8veUf1eEeSAWgXRK0"
-  notify:
-    - Reboot host
-# Generate passwords like this
-# https://docs.ansible.com/ansible/latest/reference_appendices/faq.html#how-do-i-generate-encrypted-passwords-for-the-user-module
-# python -c "from passlib.hash import sha512_crypt; import getpass; print(sha512_crypt.using(rounds=5000).hash(getpass.getpass()))"
-
-- name: "Add mattcozzolino to wheel group"
-  user:
-    name: "mattcozzolino"
-    groups: wheel
-    append: yes
-    shell: /bin/bash
-#  with_items: "{{ sudoers }}"
-  tags:
-    - user
-
-- name: Create '~/.ssh' if it does not exist
-  file:
-    path: "/home/mattcozzolino/.ssh"
-    state: directory
-    mode: '0700'
-    owner: "mattcozzolino"
-    group: "mattcozzolino"
-  #become: yes
-  #become_user: "mattcozzolino"
-  #become_method: su
-
-- name: "Place authorized keys - mattcozzolino /.ssh/authorized_keys"
-  template:
-    src: ssh_authorized_keys.j2
-    dest: "/home/mattcozzolino/.ssh/authorized_keys"
+    dest: "/home/{{ item.name }}/.ssh/authorized_keys"
 #    dest: "/home/{{ ansible_user }}/.ssh/authorized_keys"
     mode: '0600'
-    owner: "mattcozzolino"
-    group: "mattcozzolino"
-  tags:
-    - user
-  #become: yes
-  #become_user: "mattcozzolino"
+    owner: "{{ item.name }}"
+    group: "{{ item.name }}"
+  when: item.state == "present"
+  loop: "{{ user_list }}"
 
-- name: "Check for mattcozzolino id_rsa keys"
-  stat:
-    path: "/home/mattcozzolino/.ssh/id_rsa"
-  register: ssh_keys
-  tags:
-    - user
-    - ssh
-  #become: yes
-  #become_user: "mattcozzolino"
+# Shouldn't need to check for keys.
+#- name: "Check for ~/.ssh/id_ed25519 keys"
+#  stat:
+#    path: "/home/{{ item.name }}/.ssh/id_ed25519"
+#  register: ssh_keys
+#  when: item.state == "present"
+#  loop: "{{ user_list }}"
+
+#- name: Debug!
+#  ansible.builtin.debug:
+#    msg: "{{ my_index }}"
+#  loop: "{{ user_list }}"
+#  loop_control:
+#    index_var: my_index
+#
+#- name: Debug!
+#  ansible.builtin.debug:
+#    msg: "{{ ssh_keys }}"
 
 - name: "Generate keypair for user "
   openssh_keypair:
-    path: "/home/mattcozzolino/.ssh/id_rsa"
-    size: 2048
-    type: rsa
-  when: ssh_keys.stat.exists == false
-  tags:
-    - user
-  #become: yes
-  #become_user: "mattcozzolino"
+    path: "/home/{{ item.name }}/.ssh/id_ed25519"
+    type: ed25519
+    mode: 0600
+    owner: "{{ item.name }}"
+    regenerate: partial_idempotence
+  when: (item.state == "present")
+  loop: "{{ user_list }}"
+  loop_control:
+    index_var: my_index
 
-- name: SSH key settings, chmod & chown ~/.ssh/id_rsa
+- name: Backup key for Re Generate
+  ansible.builtin.copy:
+    src: "/home/{{ item.name }}/.ssh/id_ed25519"
+    dest: "/home/{{ item.name }}/.ssh/id_ed25519.bak"
+    remote_src: yes
+  when: (item.state == "present") and (regenerate_keys == true)
+  loop: "{{ user_list }}"
+
+- name: Backup pub key for Re Generate
+  ansible.builtin.copy:
+    src: "/home/{{ item.name }}/.ssh/id_ed25519.pub"
+    dest: "/home/{{ item.name }}/.ssh/id_ed25519.pub.bak"
+    remote_src: yes
+  when: (item.state == "present") and (regenerate_keys == true)
+  loop: "{{ user_list }}"
+
+- name: "Re Generate keypair for user "
+  openssh_keypair:
+    path: "/home/{{ item.name }}/.ssh/id_ed25519"
+    type: ed25519
+    mode: 0600
+    owner: "{{ item.name }}"
+    regenerate: always
+  when: (item.state == "present") and (regenerate_keys == true)
+  loop: "{{ user_list }}"
+  loop_control:
+    index_var: my_index
+
+- name: Clean ~/.ssh/id_rsa
   file:
-    path: "{{ item.path }}"
-    owner: "mattcozzolino"
-    group: "mattcozzolino"
-    mode: "{{ item.mode }}"
-  with_items:
-    - { path: '/home/mattcozzolino/.ssh/id_rsa',     mode: '0600' }
-    - { path: '/home/mattcozzolino/.ssh/id_rsa.pub', mode: '0644' }
-  tags:
-    - user
-  #become: yes
-  #become_user: "mattcozzolino"
+    #path: "~/.ssh"
+    path: "/home/{{ item.name }}/.ssh/id_rsa"
+    state: absent
+  when: item.state == "present"
+  loop: "{{ user_list }}"
+
+- name: Clean ~/.ssh/id_rsa.pub
+  file:
+    #path: "~/.ssh"
+    path: "/home/{{ item.name }}/.ssh/id_rsa.pub"
+    state: absent
+  when: item.state == "present"
+  loop: "{{ user_list }}"
+
+
+
+## do twice
+#- name: SSH key settings, chmod & chown ~/.ssh/id_rsa
+#  file:
+#    path: "{{ item.path }}"
+#    owner: "mattcozzolino"
+#    group: "mattcozzolino"
+#    mode: "{{ item.mode }}"
+#  with_items:
+#    - { path: '/home/mattcozzolino/.ssh/id_rsa',     mode: '0600' }
+#    - { path: '/home/mattcozzolino/.ssh/id_rsa.pub', mode: '0644' }
+#  loop: "{{ user_list }}"

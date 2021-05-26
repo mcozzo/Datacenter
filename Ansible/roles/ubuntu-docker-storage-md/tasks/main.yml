@@ -73,7 +73,7 @@
     state: "directory"
     recurse: "yes"
   with_items:
-    - { path: '/mnt/usb/docker', mode: '0774' }
+    - { path: '/mnt/usb/docker', mode: '0766' }
   tags:
     - user
 
@@ -81,6 +81,6 @@
   ansible.builtin.file:
     src: /mnt/usb/docker
     dest: /mnt/docker
-    owner: "1010"
+    owner: "docker"
     group: "wheel"
     state: link

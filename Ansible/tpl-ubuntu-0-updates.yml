@@ -1,0 +1,45 @@
+---
+# Apt updates
+# restart the host
+
+
+- name: Stop docker containers
+  hosts:
+    - all
+  roles:
+    - docker-git
+    - docker-stop
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+- name: Apt update, upgrade - Physical
+  hosts:
+    - raspberry_pi
+  roles:
+    - apt-upgrade
+  #tags:
+  #  - sysprep
+  #  #- never
+  become: yes
+
+- name: Apt update, upgrade - Virtual
+  hosts:
+    - virtual_machines
+  roles:
+    - apt-vmtools
+  #tags:
+  #  - sysprep
+  #  #- never
+  become: yes
+
+- name: Start docker containers
+  hosts:
+    - all
+  roles:
+    - docker-start
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
