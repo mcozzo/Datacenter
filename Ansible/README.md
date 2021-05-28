@@ -8,6 +8,9 @@ This playbook is to manage the common tasks in the datacenter. It's broken up in
 ansible-galaxy collection install google.cloud
 # https://galaxy.ansible.com/community/crypto
 ansible-galaxy collection install community.crypto
+# Gluster
+# https://docs.ansible.com/ansible/latest/collections/gluster/gluster/gluster_volume_module.html
+ansible-galaxy collection install gluster.gluster
 ```
 
 Install google cloud, remember to update the path variable.
