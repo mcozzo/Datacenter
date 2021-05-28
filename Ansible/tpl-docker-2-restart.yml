@@ -1,4 +1,5 @@
 ---
+# restart containers. Actually restart not stop, start
 
 - name: Configure and git clone
   hosts:

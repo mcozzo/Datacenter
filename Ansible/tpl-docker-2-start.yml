@@ -1,15 +1,5 @@
 ---
-# Run this after setting up the host. Pull new compose files and start
-# Configures all rquired parts to run containers
-
-#- name: Configure storage
-#  hosts: downloader
-#  roles:
-#    - ubuntu-docker-storage
-#  #tags:
-#  #  - users-new
-#  #  - never
-#  become: yes
+# Start docker containers
 
 - name: Configure and git clone
   hosts:
@@ -24,17 +14,6 @@
   #  - users-new
   #  - never
   become: yes
-
-#- name: Configure docker host
-#  hosts:
-#    - downloader
-#    - plex
-#  roles:
-#    - docker-host
-#  #tags:
-#  #  - users-new
-#  #  - never
-#  become: yes
 
 - name: Configure and run docker containers
   hosts:

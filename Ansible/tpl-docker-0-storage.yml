@@ -10,7 +10,7 @@
   #- nginx
   roles:
     - ubuntu-docker-storage-dc
-    #- ubuntu-docker-ocfs
+    - ubuntu-docker-glusterfs
   #tags:
   #  - users-new
   #  - never
