@@ -29,6 +29,8 @@
     - docker_camp
     - dev
     - docker_md
+    - nginx
+    - travel_pi
   roles:
     - docker-host
   #tags:

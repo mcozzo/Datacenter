@@ -8,6 +8,8 @@
     - dev
     - docker_camp
     - docker_md
+    - nginx
+    - travel_pi
   roles:
     - docker-git
   #tags:
@@ -22,6 +24,8 @@
     - dev
     - docker_camp
     - docker_md
+    - nginx
+    - travel_pi
   roles:
     - docker-start
   #tags:

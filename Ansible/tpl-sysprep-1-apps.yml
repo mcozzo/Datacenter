@@ -1,7 +1,7 @@
 ---
 # Run this after a clean install
 
-- name: Apt ubuntu
+- name: Apt physical (PI)
   hosts:
     - raspberry_pi
   roles:
@@ -11,7 +11,7 @@
   #  #- never
   become: yes
 
-- name: Apt vmtools
+- name: Apt VM vmtools
   hosts:
     - virtual_machines
   roles:

@@ -46,7 +46,7 @@ all:
     docker_md:
       hosts:
         docker00.md.cozzo.net:
-          ansible_host: 10.21.1.220
+          ansible_host: 10.23.0.11
     virtual_machines:
       hosts:
         downloader01.dc.cozzo.net:
@@ -60,3 +60,7 @@ all:
       hosts:
         docker00.camp.cozzo.net:
         docker00.md.cozzo.net:
+    travel_pi:
+      hosts:
+        docker00.pi.cozzo.net:
+          ansible_host: 192.168.8.10

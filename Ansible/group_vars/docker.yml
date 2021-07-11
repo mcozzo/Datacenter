@@ -21,6 +21,7 @@ docker_container_2_hosts:
   mosquitomqtt.camp.cozzo.net: docker02.camp.cozzo.net
   moviematch.cozzo.net:        downloader03.dc.cozzo.net
   octoprint.cozzo.net:         docker00.md.cozzo.net
+  nginx.cozzo.net:             nginx.dc.cozzo.net
 
 docker_iscsi_iqn:
   downloader01.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader01-dc-cozzo-net

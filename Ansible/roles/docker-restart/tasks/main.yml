@@ -15,6 +15,7 @@
     #remove_volumes: yes
   become: yes
   when: item.value != inventory_hostname
+  ignore_errors: yes
   #become_user: "{{ ansible_user }}"
   #loop: "{{ docker_container_2_hosts|dictsort }}"
   loop: "{{ docker_container_2_hosts | dict2items }}"

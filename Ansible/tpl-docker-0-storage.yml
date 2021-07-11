@@ -27,12 +27,13 @@
   #  - never
   become: yes
 
-- name: Configure storage MD
+- name: Configure storage Pi
   hosts:
     - docker_md
+    - travel_pi
   #- nginx
   roles:
-    - ubuntu-docker-storage-md
+    - ubuntu-docker-storage-pi
   #tags:
   #  - users-new
   #  - never
