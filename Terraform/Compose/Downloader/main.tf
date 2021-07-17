@@ -2,7 +2,7 @@
 # Provider Base Configuration
 #===============================================================================
 provider "vsphere" {
-  version = "1.24.2"
+  #version = "1.24.2"
   #user           = "${var.vsphere_user}"
   user           = var.admin_username
   #password       = "${var.vsphere_password}"
@@ -62,7 +62,7 @@ module "download" {
 #===============================================================================
 
 data "vsphere_tag_category" "category" {
-  name        = "terraform"
+  name        = "Terraform"
   #cardinality = "SINGLE"
   #description = "Managed by Terraform"
 
