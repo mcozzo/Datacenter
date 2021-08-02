@@ -17,6 +17,7 @@ docker_container_2_hosts:
   #cacti.cozzo.net:             downloader03.dc.cozzo.net
   zwave.cozzo.net:             docker00.camp.cozzo.net
   homeassistant.cozzo.net:     docker01.camp.cozzo.net
+  esphome.cozzo.net:           docker01.camp.cozzo.net
   nodered.camp.cozzo.net:      docker02.camp.cozzo.net
   mosquitomqtt.camp.cozzo.net: docker02.camp.cozzo.net
   moviematch.cozzo.net:        downloader03.dc.cozzo.net
