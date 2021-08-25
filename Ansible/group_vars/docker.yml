@@ -13,6 +13,7 @@ docker_container_2_hosts:
   ombi.cozzo.net:              downloader03.dc.cozzo.net
   #booksonic.cozzo.net:         downloader03.dc.cozzo.net
   plex.cozzo.net:              plex.dc.cozzo.net
+  #travelplex.cozzo.net:              plex.dc.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
   #cacti.cozzo.net:             downloader03.dc.cozzo.net
   zwave.cozzo.net:             docker00.camp.cozzo.net
