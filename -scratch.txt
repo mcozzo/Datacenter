@@ -1,0 +1,64 @@
+rsync -avhW --progress --inplace --size-only /mnt/media/Movies/Transformers* /mnt/s3/4kmovies/
+
+sudo rsync -ah --progress /mnt/docker/configs/radarr.cozzo.net /mnt/docker-local/configs/
+
+
+svc-media
+
+testuser
+
+root:
+
+s3fs bucket:cozzomovies /mnt/s3-movies -o passwd_file=/etc/passwd-s3fs -o url=https://s3.us-west-1.wasabisys.com
+
+s3fs bucket:/cozzomovies /mnt/s3-movies -o passwd_file=/etc/passwd-s3fs -o url=https://s3.wasabisys.com -f -d -o curldbg -o dbglevel=debug
+
+s3fs bucket:/cozzomovies /mnt/s3-movies -o passwd_file=/etc/passwd-s3fs -o url=https://s3.us-west-1.wasabisys.com
+
+s3fs cozzomovies /mnt/s3-movies -o passwd_file=/etc/passwd-s3fs -o url=https://s3.us-west-1.wasabisys.com  -o mp_umask:1001 -o allow_other
+
+s3fs#cozzomovies /mnt/s3/movies fuse _netdev,allow_other,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001  0 0
+
+sudo s3fs mys3_bucket_name:/data/www/public /home/ubuntu/s3_uploads -o passwd_file=/home/ubuntu/.s3fs-creds,nonempty
+
+
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "s3:ListAllMyBuckets",
+      "Resource": "arn:aws:s3:::*"
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::cozzomovies",
+        "arn:aws:s3:::cozzomovies/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::cozzo4kmovies",
+        "arn:aws:s3:::cozzo4kmovies/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": [
+        "arn:aws:s3:::cozzotv",
+        "arn:aws:s3:::cozzotv/*"
+      ]
+    },
+    {
+      "Effect": "Deny",
+      "Action": "s3:DeleteBucket",
+      "Resource": "arn:aws:s3:::*"
+    }
+  ]
+}
