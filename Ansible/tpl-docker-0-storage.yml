@@ -10,11 +10,26 @@
   #- nginx
   roles:
     - ubuntu-docker-storage-dc
-    - ubuntu-docker-glusterfs
+    #- ubuntu-docker-glusterfs
   #tags:
   #  - users-new
   #  - never
   become: yes
+
+- name: Configure storage S3
+  hosts:
+    - downloader
+    - plex
+    #- dev
+    #- nginx
+  roles:
+    - ubuntu-docker-storage-s3
+    #- ubuntu-docker-glusterfs
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
 
 - name: Configure storage Camp
   hosts:
