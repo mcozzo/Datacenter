@@ -77,9 +77,12 @@
   notify:
     - Reboot host
   with_items:
-    - { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",   type: "fuse", opts: "_netdev,allow_other,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
-    - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies", type: "fuse", opts: "_netdev,allow_other,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
-    - { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",       type: "fuse", opts: "_netdev,allow_other,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",   type: "fuse", opts: "_netdev,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/movies,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies", type: "fuse", opts: "_netdev,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/4kmovies,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",       type: "fuse", opts: "_netdev,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/tv,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     # parallel_count=10
     # use_cache=/mnt/docker-local/s3fs-cache
     # use_cache=/mnt/docker-local/s3fs-cache,del_cache,
+    # sudo mkdir -p /mnt/docker-local/s3fs-cache/movies
+    # sudo mkdir -p /mnt/docker-local/s3fs-cache/4kmovies
+    # sudo mkdir -p /mnt/docker-local/s3fs-cache/tv
