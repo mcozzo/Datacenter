@@ -1,0 +1,17 @@
+---
+# Run this after a clean install
+# Configures all rquired parts to run containers
+
+- name: Configure storage Rclone
+  hosts:
+    - downloader
+    - plex
+    - dev
+  #- nginx
+  roles:
+    - ubuntu-docker-storage-rclone
+    #- ubuntu-docker-glusterfs
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
