@@ -22,6 +22,17 @@
 #  #  - never
 #  become: yes
 
+- name: Configure DNS
+  hosts:
+    - docker_infra
+  roles:
+    - docker-resolv.conf
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+
 - name: Configure docker
   hosts:
     - downloader
@@ -31,6 +42,7 @@
     - docker_md
     - nginx
     - travel_pi
+    - docker_infra
   roles:
     - docker-host
   #tags:

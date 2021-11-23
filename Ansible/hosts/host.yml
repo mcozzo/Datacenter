@@ -11,6 +11,10 @@ all:
       hosts:
         nginx.dc.cozzo.net:
           ansible_host: 10.11.14.11
+    docker_infra:
+      hosts:
+        nameserver02.dc.cozzo.net:
+          ansible_host: 10.11.14.5
     downloader:
       hosts:
         downloader01.dc.cozzo.net:
@@ -52,6 +56,7 @@ all:
         downloader01.dc.cozzo.net:
         downloader02.dc.cozzo.net:
         downloader03.dc.cozzo.net:
+        nameserver02.dc.cozzo.net:
         plex.dc.cozzo.net:
         nginx.dc.cozzo.net:
         docker01.camp.cozzo.net:

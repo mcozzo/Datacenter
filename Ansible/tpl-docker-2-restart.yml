@@ -10,6 +10,7 @@
     - docker_md
     - nginx
     - travel_pi
+    - docker_infra
   roles:
     - docker-git
   become: yes
@@ -23,6 +24,7 @@
     - docker_md
     - nginx
     - travel_pi
+    - docker_infra
   roles:
     - docker-restart
   become: yes

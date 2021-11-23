@@ -1,0 +1,54 @@
+---
+# This fixes the resolv.conf file so DNS can run as a container on :53
+- name: Stop resolved
+  systemd:
+    name: systemd-resolved.service
+    enabled: no
+    state: stopped
+  tags:
+    - dns
+  #ignore_errors: yes
+  become: yes
+
+- name: Place nginx template files
+  template:
+    src: "{{ item.src }}"
+    #dest: /home/mattcozzolino/resolv.conf
+    dest: "{{ item.dst }}"
+    owner: "root"
+    group: "root"
+    force: yes
+    mode: 0644
+#  notify:
+#    - Reboot host
+  with_items:
+    - { src: "resolved.conf.j2",        dst: "/etc/systemd/resolved.conf" }
+
+- name: Create a symbolic link
+  ansible.builtin.file:
+    src: /etc/systemd/resolved.conf
+    dest: /etc/resolv.conf
+    owner: "root"
+    group: "root"
+    state: link
+    mode: 0644
+
+#- name: Set resolv.conf
+#  lineinfile:
+#    path: /etc/systemd/resolved.conf
+#    regexp: "{{ item.regex }}"
+#    #search_string: "{{ item.search }}"
+#    #insertafter: EOF
+#    line: "{{ item.value }}"
+#  tags:
+#    - guest
+#    - sysprep
+#  become: yes
+#  notify:
+#    - Reboot host
+#  with_items:
+#    #- { value: "[Resolve]",                     regex: "(#)?DNS="}
+#    - { value: "DNSStubListener=no",            regex: "(#)?DNSStubListener="}
+#    - { value: "search cozzo.net dc.cozzo.net", regex: "search"}
+#    - { value: "nameserver 10.11.12.11",        regex: "nameserver"}
+#    - { value: "nameserver 10.11.12.12",        regex: "nameserver"}

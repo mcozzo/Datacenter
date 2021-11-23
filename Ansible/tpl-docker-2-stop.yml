@@ -10,6 +10,7 @@
     - docker_md
     - nginx
     - travel_pi
+    - docker_infra
   roles:
     - docker-git
   #tags:
@@ -26,6 +27,7 @@
     - docker_md
     - nginx
     - travel_pi
+    - docker_infra
   roles:
     - docker-stop
   #tags:
