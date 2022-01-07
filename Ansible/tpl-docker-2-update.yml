@@ -1,0 +1,30 @@
+---
+# restart containers. Actually restart not stop, start
+
+- name: Configure and git clone
+  hosts:
+    - downloader
+    - plex
+    - dev
+    - docker_camp
+    - docker_md
+    - nginx
+    - travel_pi
+    - docker_infra
+  roles:
+    - docker-git
+  become: yes
+
+- name: Configure and run docker containers
+  hosts:
+    - downloader
+    - plex
+    - dev
+    - docker_camp
+    - docker_md
+    - nginx
+    - travel_pi
+    - docker_infra
+  roles:
+    - docker-update
+  become: yes
