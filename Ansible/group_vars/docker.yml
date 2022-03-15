@@ -14,7 +14,7 @@ docker_container_2_hosts:
   ##deluge.cozzo.net:            downloader02.dc.cozzo.net
   tautulli.cozzo.net:          downloader03.dc.cozzo.net
   ombi.cozzo.net:              downloader03.dc.cozzo.net
-  #booksonic.cozzo.net:         downloader03.dc.cozzo.net
+  booksonic.cozzo.net:         downloader03.dc.cozzo.net
   plex.cozzo.net:              plex.dc.cozzo.net
   #travelplex.cozzo.net:              plex.dc.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
