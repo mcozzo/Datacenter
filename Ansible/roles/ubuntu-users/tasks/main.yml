@@ -44,6 +44,7 @@
     uid:      "{{ item.uid }}"
     groups:   "{{ item.groups }}"
     password: "{{ item.password }}"
+    shell:    "/bin/bash"
   notify:
     #- Reboot host
   loop: "{{ user_list }}"
