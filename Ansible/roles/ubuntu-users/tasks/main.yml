@@ -23,6 +23,23 @@
     line: '%wheel ALL=(ALL) NOPASSWD: ALL'
     validate: visudo -cf %s
 
+- name: "Allow ssh to use password auth"
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    state: present
+    regexp: "{{ item.regex }}"
+    line: "{{ item.line }}"
+  notify:
+    - Restart SSH
+  with_items:
+    - { regex: "PasswordAuthentication",          line: "PasswordAuthentication no" }
+    - { regex: "MaxAuthTries",                    line: "MaxAuthTries 10" }
+    - { regex: "ChallengeResponseAuthentication", line: "ChallengeResponseAuthentication no" }
+    - { regex: "UsePAM",                          line: "UsePAM no" }
+    - { regex: "PubkeyAuthentication",            line: "PubkeyAuthentication yes"}
+    - { regex: "RSAAuthentication",               line: "RSAAuthentication yes"}
+
+
 #- name: debug
 #  debug:
 #    #msg: "{{ item.1.resource_value }}"
@@ -106,6 +123,7 @@
     type: ed25519
     mode: 0600
     owner: "{{ item.name }}"
+    group: "{{ item.name }}"
     regenerate: partial_idempotence
   when: (item.state == "present")
   loop: "{{ user_list }}"

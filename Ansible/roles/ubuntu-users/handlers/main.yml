@@ -12,3 +12,7 @@
 - name: Reboot host
   reboot:
 
+- name: Restart SSH
+  service:
+    name: ssh
+    state: restarted

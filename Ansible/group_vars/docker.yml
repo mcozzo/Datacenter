@@ -15,18 +15,19 @@ docker_container_2_hosts:
   tautulli.cozzo.net:          downloader03.dc.cozzo.net
   ombi.cozzo.net:              downloader03.dc.cozzo.net
   booksonic.cozzo.net:         downloader03.dc.cozzo.net
+  moviematch.cozzo.net:        downloader03.dc.cozzo.net
   plex.cozzo.net:              plex.dc.cozzo.net
   #travelplex.cozzo.net:              plex.dc.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
   #cacti.cozzo.net:             downloader03.dc.cozzo.net
   zwave.cozzo.net:             docker00.camp.cozzo.net
-  homeassistant.cozzo.net:     docker01.camp.cozzo.net
-  nodered.camp.cozzo.net:      docker02.camp.cozzo.net
-  mosquitomqtt.camp.cozzo.net: docker02.camp.cozzo.net
+  homeassistant.cozzo.net:     docker04.camp.cozzo.net
+  #nodered.camp.cozzo.net:      docker02.camp.cozzo.net
+  nodered.camp.cozzo.net:      docker04.camp.cozzo.net
+  mosquitomqtt.camp.cozzo.net: docker04.camp.cozzo.net
   octoprint.cozzo.net:         docker03.camp.cozzo.net
   #grafana.cozzo.net:           docker01.camp.cozzo.net
   #esphome.cozzo.net:           docker00.camp.cozzo.net
-  moviematch.cozzo.net:        downloader03.dc.cozzo.net
   nginx.cozzo.net:             nginx.dc.cozzo.net
 
 docker_iscsi_iqn:
