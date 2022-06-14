@@ -1,0 +1,25 @@
+---
+# Apt updates
+# restart the host
+
+- name: Server maintenance 
+  hosts:
+    - all
+  roles:
+    - docker-stop
+    - apt-upgrade
+    - docker-start
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
+- name: Update users
+  hosts:
+    - all
+  roles:
+    - ubuntu-users
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes

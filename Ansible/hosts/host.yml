@@ -35,10 +35,10 @@ all:
       hosts:
         docker00.camp.cozzo.net:
           ansible_host: 10.21.2.10
-        docker01.camp.cozzo.net:
-          ansible_host: 10.21.2.11
-        docker02.camp.cozzo.net:
-          ansible_host: 10.21.2.12
+        #docker01.camp.cozzo.net:
+        #  ansible_host: 10.21.2.11
+        #docker02.camp.cozzo.net:
+        #  ansible_host: 10.21.2.12
         docker03.camp.cozzo.net:
           ansible_host: 10.21.2.13
         docker04.camp.cozzo.net:
