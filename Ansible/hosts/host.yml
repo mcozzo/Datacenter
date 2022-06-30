@@ -43,6 +43,8 @@ all:
           ansible_host: 10.21.2.13
         docker04.camp.cozzo.net:
           ansible_host: 10.21.2.14
+        docker05.camp.cozzo.net:
+          ansible_host: 10.21.2.15
     docker_trident:
       hosts:
         downloader01.dc.cozzo.net:
@@ -70,6 +72,7 @@ all:
         docker00.camp.cozzo.net:
         docker03.camp.cozzo.net:
         docker04.camp.cozzo.net:
+        docker05.camp.cozzo.net:  
     travel_pi:
       hosts:
         docker00.pi.cozzo.net:

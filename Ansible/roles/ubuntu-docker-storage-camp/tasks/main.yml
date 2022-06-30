@@ -58,6 +58,7 @@
     state: mounted
   with_items:
     - { src: "10.21.2.20:/volume3/Docker", path: "/mnt/docker" }
+    - { src: "10.21.2.20:/volume4/Cozzo",  path: "/mnt/cozzo" }
     #- { src: "10.11.14.10:/media",    path: "/mnt/media" }
     #- { src: "10.11.14.10:/docker",   path: "/mnt/docker" }
     #- { src: "10.11.14.10:/software", path: "/mnt/software" }
