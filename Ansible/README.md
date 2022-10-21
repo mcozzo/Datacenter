@@ -32,7 +32,9 @@ This should prepare an Ubuntu VM template.
 ```bash
 # Initial install, use the build account, and then clean up.
 # Run service account creation
-ansible-playbook -i x.x.x.x, tpl-sysprep-0-cleaninstall.yml -e "ansible_user=usr-build" -K -k
+~~#ansible-playbook -i x.x.x.x, tpl-sysprep-0-cleaninstall.yml -e "ansible_user=usr-build" -K -k~~
+ansible-playbook -i x.x.x.x, tpl-sysprep-0-cleaninstall.yml -e "remote_user=usr-build" -K -k
+
 # Use this play to install whatever else is needed in the template
 ansible-playbook -i x.x.x.x, tpl-sysprep-1-apps.yml
 # install other things and sysprep
@@ -47,7 +49,7 @@ Setup and run docker containers
 # Configure storage, iSCSI, NFS, OCFS2
 ansible-playbook -i ./hosts/host.yml tpl-docker-0-storage.yml
 # Configure docker, start containers
-ansible-playbook -i hosts/host.yml tpl-docker-1-host.yml --extra-vars "trident_password=foo"
+ansible-playbook -i ./hosts/host.yml tpl-docker-1-host.yml --extra-vars "trident_password=foo"
 
 
 # Restart conainers. Probably want to limit the scope.

@@ -11,9 +11,15 @@ all:
       hosts:
         nginx.dc.cozzo.net:
           ansible_host: 10.11.14.11
-    docker_infra:
+    docker_dns:
       hosts:
-        nameserver02.dc.cozzo.net:
+        dns01.dc.cozzo.net:
+          ansible_host: 10.11.14.6
+        dns02.dc.cozzo.net:
+          ansible_host: 10.11.14.7
+        dnsfilter01.dc.cozzo.net:
+          ansible_host: 10.11.14.8
+        dnsfilter02.dc.cozzo.net:
           ansible_host: 10.11.14.5
     downloader:
       hosts:
@@ -67,12 +73,16 @@ all:
         nginx.dc.cozzo.net:
         docker01.camp.cozzo.net:
         docker02.camp.cozzo.net:
+        dns01.dc.cozzo.net:
+        dns02.dc.cozzo.net:
+        dnsfilter01.dc.cozzo.net:
+        dnsfilter02.dc.cozzo.net:
     raspberry_pi:
       hosts:
         docker00.camp.cozzo.net:
         docker03.camp.cozzo.net:
         docker04.camp.cozzo.net:
-        docker05.camp.cozzo.net:  
+        docker05.camp.cozzo.net:
     travel_pi:
       hosts:
         docker00.pi.cozzo.net:

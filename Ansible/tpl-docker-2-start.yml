@@ -10,7 +10,7 @@
     - docker_md
     - nginx
     - travel_pi
-    - docker_infra
+    - docker_dns
   roles:
     - docker-git
   #tags:
@@ -27,7 +27,7 @@
     - docker_md
     - nginx
     - travel_pi
-    - docker_infra
+    - docker_dns
   roles:
     - docker-start
   #tags:

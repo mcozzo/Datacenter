@@ -3,7 +3,8 @@
 
 - name: Apt physical (PI)
   hosts:
-    - raspberry_pi
+    #- raspberry_pi
+    - all
   roles:
     - apt-upgrade
   #tags:
