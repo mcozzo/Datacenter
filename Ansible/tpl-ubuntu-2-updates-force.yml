@@ -6,8 +6,8 @@
   hosts:
     - all
   roles:
-    #- docker-stop
-    - apt-upgrade
+    - docker-stop
+    - apt-upgrade-force
     - docker-start
   #tags:
   #  - users-new

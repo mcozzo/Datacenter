@@ -1,17 +1,5 @@
 ---
 
-- name: Make sure docker isn't running
-  systemd:
-    name: docker
-    enabled: yes
-    state: stopped
-  ignore_errors: yes
-  #notify:
-  #  - Reboot host
-  tags:
-    - docker
-  become: yes
-
 # Get keys from https://ftp-master.debian.org/keys/
 - name: Update apt-keys
   apt_key:
@@ -33,6 +21,7 @@
   apt:
     upgrade: safe
     update_cache: yes
+    #dpkg_options: "force-confdef,force-confold,a"
     cache_valid_time: 3600
   tags:
     - apt
@@ -60,14 +49,3 @@
     - apt
   notify:
     - Reboot host
-
-- name: Configure docker as service
-  systemd:
-    name: docker
-    enabled: yes
-    state: started
-  #notify:
-  #  - Reboot host
-  tags:
-    - docker
-  become: yes

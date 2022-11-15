@@ -18,7 +18,7 @@ all:
         dns02.dc.cozzo.net:
           ansible_host: 10.11.14.7
         dnsfilter01.dc.cozzo.net:
-          ansible_host: 10.11.14.8
+          ansible_host: 10.11.14.4
         dnsfilter02.dc.cozzo.net:
           ansible_host: 10.11.14.5
     downloader:
@@ -47,8 +47,8 @@ all:
         #  ansible_host: 10.21.2.12
         docker03.camp.cozzo.net:
           ansible_host: 10.21.2.13
-        docker04.camp.cozzo.net:
-          ansible_host: 10.21.2.14
+        #docker04.camp.cozzo.net:
+        #  ansible_host: 10.21.2.14
         docker05.camp.cozzo.net:
           ansible_host: 10.21.2.15
     docker_trident:
@@ -68,20 +68,23 @@ all:
         downloader01.dc.cozzo.net:
         downloader02.dc.cozzo.net:
         downloader03.dc.cozzo.net:
-        nameserver02.dc.cozzo.net:
         plex.dc.cozzo.net:
         nginx.dc.cozzo.net:
-        docker01.camp.cozzo.net:
-        docker02.camp.cozzo.net:
+        #docker01.camp.cozzo.net:
+        #docker02.camp.cozzo.net:
+    dns01:
+      hosts:
         dns01.dc.cozzo.net:
-        dns02.dc.cozzo.net:
         dnsfilter01.dc.cozzo.net:
+    dns02:
+      hosts:
+        dns02.dc.cozzo.net:
         dnsfilter02.dc.cozzo.net:
     raspberry_pi:
       hosts:
         docker00.camp.cozzo.net:
         docker03.camp.cozzo.net:
-        docker04.camp.cozzo.net:
+        #docker04.camp.cozzo.net:
         docker05.camp.cozzo.net:
     travel_pi:
       hosts:
