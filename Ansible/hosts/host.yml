@@ -13,14 +13,14 @@ all:
           ansible_host: 10.11.14.11
     docker_dns:
       hosts:
-        dns01.dc.cozzo.net:
-          ansible_host: 10.11.14.6
-        dns02.dc.cozzo.net:
-          ansible_host: 10.11.14.7
         dnsfilter01.dc.cozzo.net:
           ansible_host: 10.11.14.4
         dnsfilter02.dc.cozzo.net:
           ansible_host: 10.11.14.5
+        dns01.dc.cozzo.net:
+          ansible_host: 10.11.14.6
+        dns02.dc.cozzo.net:
+          ansible_host: 10.11.14.7
     downloader:
       hosts:
         downloader01.dc.cozzo.net:
