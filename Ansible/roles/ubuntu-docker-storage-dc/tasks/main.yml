@@ -59,7 +59,7 @@
   notify:
     - Reboot host
   with_items:
-    - { src: "10.11.14.10:/media",    path: "/mnt/media",    type: "nfs4", opts: "defaults"  }
-    - { src: "10.11.14.10:/docker",   path: "/mnt/docker",   type: "nfs4", opts: "nolock"  }
-    - { src: "10.11.14.10:/software", path: "/mnt/software", type: "nfs4", opts: "defaults"  }
-    - { src: "10.11.14.10:/download", path: "/mnt/download", type: "nfs4", opts: "defaults"  }
+    - { src: "10.11.14.10:/media",    path: "/mnt/media",    type: "nfs4", opts: "defaults,vers=3"  }
+    - { src: "10.11.14.10:/docker",   path: "/mnt/docker",   type: "nfs4", opts: "nolock,vers=3"  }
+    - { src: "10.11.14.10:/software", path: "/mnt/software", type: "nfs4", opts: "defaults,vers=3"  }
+    - { src: "10.11.14.10:/download", path: "/mnt/download", type: "nfs4", opts: "defaults,vers=3"  }

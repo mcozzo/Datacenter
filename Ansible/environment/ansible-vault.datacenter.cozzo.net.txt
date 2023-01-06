@@ -1,2 +1,2 @@
 < Literally just paste the password raw in this file.
-I live in: ~/GitHub/vars/ansible-vault.datacenter.cozzo.net.txt >
+I live in: ~/GitHub/Cozzo/vars/ansible-vault.datacenter.cozzo.net.txt >

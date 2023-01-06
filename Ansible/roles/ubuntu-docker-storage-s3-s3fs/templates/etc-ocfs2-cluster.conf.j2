@@ -1,0 +1,36 @@
+cluster:
+	name = docker
+	heartbeat_mode = global
+	node_count = 4
+
+heartbeat:
+	cluster = docker
+	region = DDC2931ED9FE4E158AB9C1D891F24174
+
+node:
+	cluster = docker
+	number = 0
+	ip_port = 7777
+	ip_address = 10.11.14.31
+	name = downloader01
+
+node:
+	cluster = docker
+	number = 1
+	ip_port = 7777
+	ip_address = 10.11.14.32
+	name = downloader02
+
+node:
+	cluster = docker
+	number = 2
+	ip_port = 7777
+	ip_address = 10.11.14.33
+	name = downloader03
+
+node:
+	cluster = docker
+	number = 3
+	ip_port = 7777
+	ip_address = 10.11.14.30
+	name = plex

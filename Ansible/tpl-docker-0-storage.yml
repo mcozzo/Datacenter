@@ -24,7 +24,7 @@
     #- dev
     #- nginx
   roles:
-    - ubuntu-docker-storage-s3
+    - ubuntu-docker-storage-s3-s3fs
     #- ubuntu-docker-glusterfs
   #tags:
   #  - users-new
