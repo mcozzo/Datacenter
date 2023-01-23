@@ -9,7 +9,6 @@
     - docker_md
     - nginx
     - travel_pi
-    - docker_infra
   roles:
     - docker-git
   become: yes

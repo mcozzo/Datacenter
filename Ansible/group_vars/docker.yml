@@ -30,11 +30,12 @@ docker_container_2_hosts:
   nodered.camp.cozzo.net:      docker05.camp.cozzo.net
   mosquitomqtt.camp.cozzo.net: docker05.camp.cozzo.net
   octoprint.cozzo.net:         docker03.camp.cozzo.net
-  #grafana.cozzo.net:           docker01.camp.cozzo.net
+  grafana.cozzo.net:           docker05.camp.cozzo.net
   #esphome.cozzo.net:           docker00.camp.cozzo.net
   nginx.cozzo.net:             nginx.dc.cozzo.net
   plex-camp.cozzo.net:         docker05.camp.cozzo.net
   stash.cozzo.net:             docker05.camp.cozzo.net
+  influxdb-camp.cozzo.net:     docker05.camp.cozzo.net
 
 docker_iscsi_iqn:
   downloader01.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader01-dc-cozzo-net
