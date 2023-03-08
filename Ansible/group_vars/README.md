@@ -5,7 +5,7 @@ Because I keep forgetting.
 * https://docs.ansible.com/ansible/latest/user_guide/vault.html
 ```bash
 # Encrypt
-ansible-vault encrypt --vault-password-file /Users/mattcozzolino/GitHub/vars/ansible-vault.datacenter.cozzo.net.txt vault.yml
+ansible-vault encrypt --vault-password-file /Users/mattcozzolino/GitHub/Cozzo/vars/ansible-vault.datacenter.cozzo.net.txt vault.yml
 # Decrypt
-ansible-vault decrypt --vault-password-file /Users/mattcozzolino/GitHub/vars/ansible-vault.datacenter.cozzo.net.txt vault.yml
+ansible-vault decrypt --vault-password-file /Users/mattcozzolino/GitHub/Cozzo/vars/ansible-vault.datacenter.cozzo.net.txt vault.yml
 ```

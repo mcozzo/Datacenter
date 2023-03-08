@@ -60,10 +60,23 @@
     create: yes
     line: "{{ vault_wasabi_svc_media_access_key }}:{{ vault_wasabi_svc_media_secret_key }}"
     regexp: "^[a-zA-Z0-9]{20}:[a-zA-Z0-9]{40}"
-    mode: 0640
+    mode: 0600
   become: yes
   notify:
     - Reboot host
+
+- name: Verify s3fs password file RO
+  ansible.builtin.lineinfile:
+    path: /etc/passwd-s3fs-ro
+    state: present
+    create: yes
+    line: "{{ vault_wasabi_svc_media_access_key_ro }}:{{ vault_wasabi_svc_media_secret_key_ro }}"
+    regexp: "^[a-zA-Z0-9]{20}:[a-zA-Z0-9]{40}"
+    mode: 0600
+  become: yes
+  notify:
+    - Reboot host
+
 
 # https://manpages.ubuntu.com/manpages/xenial/man1/s3fs.1.html
 - name: Create common Mounts
@@ -77,10 +90,27 @@
   notify:
     - Reboot host
   with_items:
-    - { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",   type: "fuse", opts: "_netdev,noua,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/movies,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
-    - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies", type: "fuse", opts: "_netdev,noua,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/4kmovies,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
-    - { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",       type: "fuse", opts: "_netdev,noua,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/tv,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
-    - { src: "s3fs#cozzologging",  path: "/mnt/s3/logging",  type: "fuse", opts: "_netdev,noua,allow_other,nonempty,use_cache=/mnt/docker-local/s3fs-cache/logging,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    #- { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",     type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/movies" }
+    #- { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies",   type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/4kmovies" }
+    #- { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",         type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/tv" }
+    #- { src: "s3fs#cozzologging",  path: "/mnt/s3/logging",    type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/logging" }
+    #
+    #- { src: "s3fs#cozzomovies",   path: "/mnt/s3ro/movies",   type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/movies" }
+    #- { src: "s3fs#cozzo4kmovies", path: "/mnt/s3ro/4kmovies", type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/4kmovies" }
+    #- { src: "s3fs#cozzotv",       path: "/mnt/s3ro/tv",       type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/tv" }
+    #- { src: "s3fs#cozzologging",  path: "/mnt/s3ro/logging",  type: "fuse", opts: "_netdev,noua,allow_other,nonempty,del_cache,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001,use_cache=/mnt/docker-local/s3fs-cache/logging" }
+
+    - { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",      type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies",    type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",          type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzologging",  path: "/mnt/s3/logging",     type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    
+    - { src: "s3fs#cozzomovies",   path: "/mnt/s3-ro/movies",   type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3-ro/4kmovies", type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzotv",       path: "/mnt/s3-ro/tv",       type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzologging",  path: "/mnt/s3-ro/logging",  type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+
+
     # parallel_count=10
     # use_cache=/mnt/docker-local/s3fs-cache
     # use_cache=/mnt/docker-local/s3fs-cache,del_cache,

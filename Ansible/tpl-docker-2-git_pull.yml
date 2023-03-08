@@ -9,6 +9,8 @@
     - docker_md
     - nginx
     - travel_pi
+    - dns01
+    - dns02
   roles:
     - docker-git
   become: yes
