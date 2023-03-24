@@ -14,6 +14,7 @@ docker_container_2_hosts:
   radarr4k.cozzo.net:          downloader01.dc.cozzo.net
   sonarr4k.cozzo.net:          downloader01.dc.cozzo.net
   transmission.cozzo.net:      downloader02.dc.cozzo.net
+  qbittorrent.cozzo.net:       downloader02.dc.cozzo.net
   #sabnzbd.cozzo.net:           downloader02.dc.cozzo.net
   ##deluge.cozzo.net:            downloader02.dc.cozzo.net
   tautulli.cozzo.net:          downloader03.dc.cozzo.net
