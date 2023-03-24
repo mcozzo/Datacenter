@@ -9,11 +9,12 @@ docker_container_2_hosts:
   dnsfilter01.cozzo.net:        dnsfilter01.dc.cozzo.net
   dnsfilter02.cozzo.net:        dnsfilter02.dc.cozzo.net
   jackett.cozzo.net:           downloader01.dc.cozzo.net
+  prowlarr.cozzo.net:          downloader01.dc.cozzo.net
   radarr.cozzo.net:            downloader01.dc.cozzo.net
   sonarr.cozzo.net:            downloader01.dc.cozzo.net
   radarr4k.cozzo.net:          downloader01.dc.cozzo.net
   sonarr4k.cozzo.net:          downloader01.dc.cozzo.net
-  transmission.cozzo.net:      downloader02.dc.cozzo.net
+  #transmission.cozzo.net:      downloader02.dc.cozzo.net
   qbittorrent.cozzo.net:       downloader02.dc.cozzo.net
   #sabnzbd.cozzo.net:           downloader02.dc.cozzo.net
   ##deluge.cozzo.net:            downloader02.dc.cozzo.net
