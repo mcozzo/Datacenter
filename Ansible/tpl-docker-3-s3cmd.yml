@@ -1,0 +1,20 @@
+---
+# Stop docker containers
+
+- name: Install S3CMD
+  hosts:
+    - downloader
+    - plex
+    - dev
+    - docker_camp
+    - docker_md
+    - nginx
+    - travel_pi
+    - docker_dns
+  roles:
+    - ubuntu-docker-s3cmd
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
