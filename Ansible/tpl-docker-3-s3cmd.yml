@@ -5,12 +5,6 @@
   hosts:
     - downloader
     - plex
-    - dev
-    - docker_camp
-    - docker_md
-    - nginx
-    - travel_pi
-    - docker_dns
   roles:
     - ubuntu-docker-s3cmd
   #tags:
