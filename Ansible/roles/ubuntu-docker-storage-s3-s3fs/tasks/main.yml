@@ -103,11 +103,13 @@
     - { src: "s3fs#cozzomovies",   path: "/mnt/s3/movies",      type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3/4kmovies",    type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzotv",       path: "/mnt/s3/tv",          type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzo4ktv",     path: "/mnt/s3/4ktv",        type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzologging",  path: "/mnt/s3/logging",     type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     
     - { src: "s3fs#cozzomovies",   path: "/mnt/s3-ro/movies",   type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzo4kmovies", path: "/mnt/s3-ro/4kmovies", type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzotv",       path: "/mnt/s3-ro/tv",       type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
+    - { src: "s3fs#cozzo4ktv",     path: "/mnt/s3-ro/4ktv",     type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
     - { src: "s3fs#cozzologging",  path: "/mnt/s3-ro/logging",  type: "fuse", opts: "_netdev,allow_other,nonempty,passwd_file=/etc/passwd-s3fs-ro,url=https://s3.us-west-1.wasabisys.com,uid=1001,gid=1001" }
 
 
