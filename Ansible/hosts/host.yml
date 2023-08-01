@@ -37,6 +37,10 @@ all:
       hosts:
         test.dc.cozzo.net:
           ansible_host: 10.11.14.41
+    docker_md:
+      hosts:
+        docker00.md.cozzo.net:
+          ansible_host: 10.21.5.27
     docker_camp:
       hosts:
         docker00.camp.cozzo.net:
@@ -86,6 +90,7 @@ all:
         docker03.camp.cozzo.net:
         #docker04.camp.cozzo.net:
         docker05.camp.cozzo.net:
+        docker00.md.cozzo.net:
     travel_pi:
       hosts:
         docker00.pi.cozzo.net:
