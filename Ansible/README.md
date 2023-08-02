@@ -2,6 +2,17 @@
 This playbook is to manage the common tasks in the datacenter. It's broken up into unique groups of tasks that are called out by specific files. Roles should be designed to be reused.
 
 ## Prerequisites
+* Virtual Environment
+```bash
+# Create
+python -m venv /Users/mattcozzolino/python/cozzo-ansible
+# Activate
+source /Users/mattcozzolino/python/cozzo-ansible/bin/activate
+# Deactivate
+deactivate
+```
+
+
 * https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
 ```bash
 # https://galaxy.ansible.com/google/cloud
@@ -55,4 +66,17 @@ ansible-playbook -i ./hosts/host.yml tpl-docker-1-host.yml --extra-vars "trident
 
 # Restart conainers. Probably want to limit the scope.
 ansible-playbook -i ./hosts/host.yml tpl-docker-2-restart.yml --limit plex
+```
+
+## Daily operations
+
+Valid hosts: nginx, docker_dns, downloader, plex, dev, docker_camp, docker_trident, docker_md, virtual_machines, dns01, dns02, raspberry_pi, travel_pi
+
+```bash
+# Activate
+source /Users/mattcozzolino/python/cozzo-ansible/bin/activate
+# Run
+ansible-playbook -i ./hosts/host.yml tpl-docker-2-restart.yml --limit plex
+# Deactivate
+deactivate
 ```

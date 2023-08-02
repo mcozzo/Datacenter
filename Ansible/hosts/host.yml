@@ -5,7 +5,7 @@ all:
       host_ip: 127.0.0.1
       ansible_connection: local
       ansible_user: mattcozzolino
-      ansible_python_interpreter: /usr/local/bin/python3
+      #ansible_python_interpreter: /usr/local/bin/python3
   children:
     nginx:
       hosts:
@@ -37,10 +37,6 @@ all:
       hosts:
         test.dc.cozzo.net:
           ansible_host: 10.11.14.41
-    docker_md:
-      hosts:
-        docker00.md.cozzo.net:
-          ansible_host: 10.21.5.27
     docker_camp:
       hosts:
         docker00.camp.cozzo.net:
@@ -65,7 +61,8 @@ all:
           ansible_host: 10.11.14.33
     docker_md:
       hosts:
-        #docker00.md.cozzo.net:
+        docker00.md.cozzo.net:
+          ansible_host: 10.21.5.27
         #  ansible_host: 10.21.0.16
     virtual_machines:
       hosts:
