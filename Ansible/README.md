@@ -68,9 +68,31 @@ ansible-playbook -i ./hosts/host.yml tpl-docker-1-host.yml --extra-vars "trident
 ansible-playbook -i ./hosts/host.yml tpl-docker-2-restart.yml --limit plex
 ```
 
+## Google DNS
+### Prerequisites
+* https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+Install google plugins
+```bash
+# Install ansible, requests, google-auth
+python3 -m pip install ansible requests google-auth --force
+# https://galaxy.ansible.com/google/cloud
+# https://galaxy.ansible.com/community/crypto
+ansible-galaxy collection install community.crypto --force
+# Install additional python stuff (This needs to be done outside of the venv)
+```
+* Install google cloud, remember to update the path variable.
+```bash
+# https://cloud.google.com/sdk/docs/quickstart
+# Download version, Extract
+~/google-cloud-sdk/.install.sh
+# Let it finish installing
+gcloud init
+```
+
+
 ## Daily operations
 
-Valid hosts: nginx, docker_dns, downloader, plex, dev, docker_camp, docker_trident, docker_md, virtual_machines, dns01, dns02, raspberry_pi, travel_pi
+Valid hosts: nginx, docker_dns, downloader, plex, dev, docker_camp, docker_trident, docker_md, virtual_machines, dns01, dns02, raspberry_pi, travel_pi, reverse_proxy
 
 ```bash
 # Activate

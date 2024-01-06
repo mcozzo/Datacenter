@@ -2,6 +2,7 @@
 
 - name: Configure and git clone
   hosts:
+    - reverse_proxy
     - downloader
     - plex
     - dev

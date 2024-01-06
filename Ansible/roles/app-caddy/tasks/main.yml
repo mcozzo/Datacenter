@@ -1,0 +1,63 @@
+---
+# Docker stuff
+
+# Ensure directories existing
+- name: Verify app directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "1001"
+    group: "1001"
+    #owner: "{{ ansible_user }}"
+    #group: "{{ ansible_user }}"
+  become: true
+#  become_user: mattcozzolino
+  with_items:
+#    - /mnt/docker/blue/nginx/config
+    - "{{ container_root }}/{{ inventory_hostname }}/caddy"
+    - "{{ container_root }}/{{ inventory_hostname }}/caddyfiles"
+    - "{{ container_root }}/{{ inventory_hostname }}/config"
+    - "{{ container_root }}/{{ inventory_hostname }}/data"
+    - "{{ container_root }}/{{ inventory_hostname }}/site"
+
+- name: Place main Caddyfile
+  become: true
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dst }}"
+    owner: "1001"
+    group: "1001"
+  with_items:
+    - { src: "Caddyfile.j2", dst: "{{ container_root }}/{{ inventory_hostname }}/caddy/Caddyfile" }
+    
+- name: Place public site specific Caddyfiles
+  become: true
+  template:
+    src: "public-site.fqdn.caddy.j2"
+    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.name }}.caddy"
+    owner: "1001"
+    group: "1001"
+    force: true
+  notify:
+    - Restart conatiner
+  with_items: "{{ proxy_sites }}"
+  when:
+    - item.public       == true
+    - item.proxy        == true
+    - item.proxy_server == inventory_hostname
+
+- name: Place private site specific Caddyfiles
+  become: true
+  template:
+    src: "private-site.fqdn.caddy.j2"
+    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.name }}.caddy"
+    owner: "1001"
+    group: "1001"
+    force: true
+  notify:
+    - Restart conatiner
+  with_items: "{{ proxy_sites }}"
+  when:
+    - item.public       == false
+    - item.proxy        == true
+    - item.proxy_server == inventory_hostname

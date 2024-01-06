@@ -1,0 +1,15 @@
+{{ item.name }} {
+	reverse_proxy {{ item.proxy_pass }}
+	
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubdomains"
+		X-XSS-Protection "1; mode=block"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "same-origin"
+	}
+
+	# Only respond to RFC1918
+	@denied not remote_ip private_ranges
+	abort @denied
+}

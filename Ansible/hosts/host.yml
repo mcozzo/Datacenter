@@ -92,3 +92,9 @@ all:
       hosts:
         docker00.pi.cozzo.net:
           ansible_host: 192.168.8.10
+    reverse_proxy:
+      hosts:
+        caddy.dc.cozzo.net:
+          ansible_host: 10.11.14.11
+        caddy.camp.cozzo.net:
+          ansible_host: 10.21.2.15

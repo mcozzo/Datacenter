@@ -1,0 +1,211 @@
+---
+
+################################################################################
+# Environment setup
+# Conainer root throughout the environment. 
+container_root: "/mnt/docker/configs"
+
+################################################################################
+# GCP config
+# GCP dns name requires the trailing period site.com.
+gcp_dns_name: cozzo.net.
+gcp_vars_file: ../../vars/cozzo-dns-8f248ebc58f2.json
+gcp_project: cozzo-dns
+gcp_zone: cozzonet
+
+################################################################################
+# Site config
+# The giant array that conatins all of the proxy matching. 
+#
+# THIS IS AN EXAMPLE
+#proxy_sites
+#  - {
+#      name: "homeassistant.cozzo.net",                 # The server name
+#      proxy_pass: "homeassistant.camp.cozzo.net:8123", # The inside server
+#      proxy_server: "caddy.camp.cozzo.net",            # What server should it run on. Make sure there is a relevant entry in hosts.yml
+#      proxy: true,                                     # Should this be proxied? Or are you just generating a LE cert. Probably delete this eventually (hah right...), Maybe allow this to remove the file? 
+#      public: true,                                    # Public or private? 
+#      url: [                                           # All URLs for the proxy to listen on. Also used to place DNS records for LE to validate. 
+#        "homeassistant.cozzo.net",
+#        "homeassistant.camp.cozzo.net" 
+#      ]
+#    }
+
+proxy_servers:
+  caddy.camp.cozzo.net: "camp.cozzo.net"
+  caddy.dc.cozzo.net: "dc.cozzo.net"
+
+proxy_sites:
+  - {
+      name: "homeassistant.cozzo.net",
+      proxy_pass: "homeassistant.camp.cozzo.net:8123",
+      proxy_server: "caddy.camp.cozzo.net",
+      proxy: true,
+      public: true,
+      url: [
+        "homeassistant.cozzo.net",
+        "homeassistant.camp.cozzo.net"
+      ]
+    }
+  - {
+      name: "radarr.cozzo.net",
+      proxy_pass: "radarr.dc.cozzo.net:7878",
+      proxy_server: "caddy.dc.cozzo.net",
+      proxy: true,
+      public: false,
+      url: [
+        "radarr.cozzo.net",
+        "radarr.dc.cozzo.net"
+      ]
+    }
+  - {
+      name: "radarr4k.cozzo.net",
+      proxy_pass: "radarr.dc.cozzo.net:7877",
+      proxy_server: "caddy.dc.cozzo.net",
+      proxy: true,
+      public: false,
+      url: [
+        "radarr4k.cozzo.net"
+      ]
+    }
+
+  #- {
+  #    name: "plex.cozzo.net",
+  #    proxy_server: "caddy.dc.cozzo.net",
+  #    proxy_pass: "plex.dc.cozzo.net:32400",
+  #    proxy: false,
+  #    public: true,
+  #    url: [
+  #      "plex.cozzo.net",
+  #      "plex.dc.cozzo.net"
+  #    ]
+  #  }
+  #- {
+  #    name: "nginx.cozzo.net",
+  #    proxy_pass: "webserver.dc.cozzo.net",
+  #    proxy: true,
+  #    public: true,
+  #    url: [
+  #      "nginx.cozzo.net",
+  #      "nginx2.cozzo.net",
+  #      "nginx3.cozzo.net"
+  #    ]
+  #  }
+#  - {
+#      name: "radarr.cozzo.net",
+#      proxy_pass: "radarr.dc.cozzo.net:7878",
+#      proxy_server: "caddy.dc.cozzo.net",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "radarr.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "sonarr.cozzo.net",
+#      proxy_pass: "sonarr.dc.cozzo.net:8989",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "sonarr.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "sonarr4k.cozzo.net",
+#      proxy_pass: "sonarr.dc.cozzo.net:8988",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "sonarr4k.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "transmission.cozzo.net",
+#      proxy_pass: "transmission.dc.cozzo.net:9091",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "transmission.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "qbittorrent.cozzo.net",
+#      proxy_pass: "transmission.dc.cozzo.net:8080",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "qbittorrent.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "tautulli.cozzo.net",
+#      proxy_pass: "tautulli.dc.cozzo.net:8181",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "tautulli.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "ombi.cozzo.net",
+#      proxy_pass: "flix.dc.cozzo.net:3579",
+#      proxy: true,
+#      public: true,
+#      url: [
+#        "ombi.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "flix.cozzo.net",
+#      proxy_pass: "flix.dc.cozzo.net:3579",
+#      proxy: true,
+#      public: true,
+#      url: [
+#        "flix.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "homeassistant-md.cozzo.net",
+#      proxy_pass: "homeassistant.md.cozzo.net:8123",
+#      proxy: true,
+#      public: true,
+#      url: [
+#        "homeassistant-md.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "booksonic.cozzo.net",
+#      proxy_pass: "booksonic.dc.cozzo.net:4040",
+#      proxy: true,
+#      public: true,
+#      url: [
+#        "booksonic.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "flixr.cozzo.net",
+#      proxy_pass: "moviematch.dc.cozzo.net:8000",
+#      proxy: true,
+#      public: true,
+#      url: [
+#        "flixr.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "octoprint.cozzo.net",
+#      proxy_pass: "octoprint.md.cozzo.net",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "octoprint.cozzo.net"
+#      ]
+#    }
+#  - {
+#      name: "esphome.cozzo.net",
+#      proxy_pass: "docker01.camp.cozzo.net:6052",
+#      proxy: true,
+#      public: false,
+#      url: [
+#        "esphome.cozzo.net"
+#      ]
+#    }
