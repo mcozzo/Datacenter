@@ -65,15 +65,15 @@
 
 - name: Update docker-compose from git
   git:
-    accept_hostkey: yes
+    accept_hostkey: true
     repo: git@github.com:mcozzo/docker.git
     dest: /mnt/git/docker
-    update: yes
+    update: true
     version: HEAD
-    force: yes
+    force: true
     remote: origin
     key_file: "/home/{{ ansible_user }}/.ssh/ssh-git-ro.key"
-  become: yes
+  become: true
   become_user: "{{ ansible_user }}"
 #  tags:
 #    - never

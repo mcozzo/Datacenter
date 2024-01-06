@@ -27,6 +27,8 @@ docker_container_2_hosts:
   #travelplex.cozzo.net:              plex.dc.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
   #cacti.cozzo.net:             downloader03.dc.cozzo.net
+  dns01.camp.cozzo.net:        docker05.camp.cozzo.net
+  caddy.camp.cozzo.net:        docker05.camp.cozzo.net
   zwave.cozzo.net:             docker05.camp.cozzo.net
   homeassistant.cozzo.net:     docker05.camp.cozzo.net
   #nodered.camp.cozzo.net:      docker02.camp.cozzo.net
