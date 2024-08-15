@@ -20,3 +20,10 @@
     comment: "Delete build user"
     state: absent
     remove: yes
+
+- name: "Remove the build account"
+  user:
+    name: "setup"
+    comment: "Delete build user"
+    state: absent
+    remove: yes

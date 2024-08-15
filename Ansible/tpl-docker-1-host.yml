@@ -50,17 +50,17 @@
   #  - never
   become: yes
 
-- name: Configure docker trident
-  hosts:
-    - downloader
-    - plex
-    - dev
-  roles:
-    - docker-netapp-trident
-  #tags:
-  #  - users-new
-  #  - never
-  become: yes
+#- name: Configure docker trident
+#  hosts:
+#    - downloader
+#    - plex
+#    - dev
+#  roles:
+#    - docker-netapp-trident
+#  #tags:
+#  #  - users-new
+#  #  - never
+#  become: yes
 
 
 #- name: Configure and run docker containers

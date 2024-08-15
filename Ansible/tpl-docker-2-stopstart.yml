@@ -1,6 +1,22 @@
 ---
 # Start docker containers
 
+- name: Stop docker containers
+  hosts:
+    - downloader
+    - plex
+    - docker_camp
+    - docker_md
+    - nginx
+    - travel_pi
+    - docker_dns
+  roles:
+    - docker-stop
+  #tags:
+  #  - users-new
+  #  - never
+  become: yes
+
 - name: Configure and git clone
   hosts:
     - downloader

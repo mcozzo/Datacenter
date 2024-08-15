@@ -3,45 +3,49 @@
 #  vars:
 docker_container_2_hosts:
   #docker.compose.file:         server.fqdn.net
-  #dns02.cozzo.net:             nameserver02.dc.cozzo.net
-  caddy.dc.cozzo.net:          caddy.dc.cozzo.net
-  dns01.dc.cozzo.net:          dns01.dc.cozzo.net
-  dns02.dc.cozzo.net:          dns02.dc.cozzo.net
-  dnsfilter01.dc.cozzo.net:    dnsfilter01.dc.cozzo.net
-  dnsfilter02.dc.cozzo.net:    dnsfilter02.dc.cozzo.net
+  dns01.dc.cozzo.net:           dns01.dc.cozzo.net
+  dns02.dc.cozzo.net:           dns02.dc.cozzo.net
+  #dns01.camp.cozzo.net:         docker05.camp.cozzo.net
+  #caddy.dc.cozzo.net:           rproxy.dc.cozzo.net
+  caddy.camp.cozzo.net:         docker05.camp.cozzo.net
+  dnsfilter01.dc.cozzo.net:     dnsfilter01.dc.cozzo.net
+  dnsfilter02.dc.cozzo.net:     dnsfilter02.dc.cozzo.net
   #jackett.cozzo.net:           downloader01.dc.cozzo.net
-  prowlarr.cozzo.net:          downloader01.dc.cozzo.net
-  heimdall.cozzo.net:          downloader01.dc.cozzo.net
-  radarr.cozzo.net:            downloader01.dc.cozzo.net
-  sonarr.cozzo.net:            downloader01.dc.cozzo.net
-  radarr4k.cozzo.net:          downloader01.dc.cozzo.net
-  sonarr4k.cozzo.net:          downloader01.dc.cozzo.net
+  prowlarr.dc.cozzo.net:        downloader01.dc.cozzo.net
+  heimdall.dc.cozzo.net:        downloader01.dc.cozzo.net
+  radarr.dc.cozzo.net:          downloader01.dc.cozzo.net
+  sonarr.dc.cozzo.net:          downloader01.dc.cozzo.net
+  radarr4k.dc.cozzo.net:        downloader01.dc.cozzo.net
+  sonarr4k.dc.cozzo.net:        downloader01.dc.cozzo.net
+  kuma.dc.cozzo.net:            downloader01.dc.cozzo.net
   #transmission.cozzo.net:      downloader02.dc.cozzo.net
-  qbittorrent.cozzo.net:       downloader02.dc.cozzo.net
-  sabnzbd.cozzo.net:           downloader02.dc.cozzo.net
-  ##deluge.cozzo.net:            downloader02.dc.cozzo.net
-  tautulli.cozzo.net:          downloader03.dc.cozzo.net
-  ombi.cozzo.net:              downloader03.dc.cozzo.net
-  booksonic.cozzo.net:         downloader03.dc.cozzo.net
-  moviematch.cozzo.net:        downloader03.dc.cozzo.net
-  plex.cozzo.net:              plex.dc.cozzo.net
-  #travelplex.cozzo.net:              plex.dc.cozzo.net
+  qbittorrent.dc.cozzo.net:     downloader02.dc.cozzo.net
+  sabnzbd.dc.cozzo.net:         downloader02.dc.cozzo.net
+  ##deluge.cozzo.net:           downloader02.dc.cozzo.net
+  tautulli.dc.cozzo.net:        downloader03.dc.cozzo.net
+  ombi.dc.cozzo.net:            downloader03.dc.cozzo.net
+  #booksonic.cozzo.net:         downloader03.dc.cozzo.net
+  #moviematch.cozzo.net:        downloader03.dc.cozzo.net
+  plex.dc.cozzo.net:            plex.dc.cozzo.net
+  #travelplex.cozzo.net:        plex.dc.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
   #cacti.cozzo.net:             downloader03.dc.cozzo.net
-  dns01.camp.cozzo.net:        docker05.camp.cozzo.net
-  caddy.camp.cozzo.net:        caddy.camp.cozzo.net
-  zwave.cozzo.net:             docker05.camp.cozzo.net
-  homeassistant.cozzo.net:     docker05.camp.cozzo.net
+  #caddy.camp.cozzo.net:        caddy.camp.cozzo.net
+  zwave.camp.cozzo.net:         docker05.camp.cozzo.net
+  homeassistant.camp.cozzo.net: docker05.camp.cozzo.net
   #nodered.camp.cozzo.net:      docker02.camp.cozzo.net
-  nodered.camp.cozzo.net:      docker05.camp.cozzo.net
-  mosquitomqtt.camp.cozzo.net: docker05.camp.cozzo.net
-  octoprint.cozzo.net:         docker03.camp.cozzo.net
-  grafana.cozzo.net:           docker05.camp.cozzo.net
+  nodered.camp.cozzo.net:       docker05.camp.cozzo.net
+  mosquitomqtt.camp.cozzo.net:  docker05.camp.cozzo.net
+  #octoprint.cozzo.net:         docker03.camp.cozzo.net
+  grafana.camp.cozzo.net:       docker05.camp.cozzo.net
   #esphome.cozzo.net:           docker00.camp.cozzo.net
-  nginx.cozzo.net:             nginx.dc.cozzo.net
-  plex-camp.cozzo.net:         docker05.camp.cozzo.net
-  stash.cozzo.net:             docker05.camp.cozzo.net
-  influxdb-camp.cozzo.net:     docker05.camp.cozzo.net
+  #nginx.cozzo.net:             nginx.dc.cozzo.net
+  #plex-camp.cozzo.net:         docker05.camp.cozzo.net
+  #stash.camp.cozzo.net:         docker05.camp.cozzo.net
+  influxdb.camp.cozzo.net:      docker05.camp.cozzo.net
+  frigate.camp.cozzo.net:       docker05.camp.cozzo.net
+  bazarr.dc.cozzo.net:          downloader01.dc.cozzo.net
+  recyclarr.cozzo.net:          downloader01.dc.cozzo.net
 
 docker_iscsi_iqn:
   downloader01.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader01-dc-cozzo-net

@@ -11,8 +11,8 @@ trident_password: "{{ vault_trident_password }}"
 ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
 
 dns_servers:
-  - 10.11.14.4
-  - 10.11.14.5
+  - 1.1.1.1
+  - 1.0.0.1
 
     # User variables
     # SSH_USER: ansible-svc

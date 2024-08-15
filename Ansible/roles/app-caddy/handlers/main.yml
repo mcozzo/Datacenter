@@ -11,21 +11,24 @@
 - name: Reboot host
   reboot:
 
-- name: Restart conatiner
+- name: Restart Caddy
   docker_compose:
     build: yes
     #project_src: /Users/mattcozzolino/GitHub/Docker/apps/homeassistant-pi/docker-compose.yml
-    project_src: /mnt/git/docker/apps/{{ item.key }}
+    project_src: /mnt/git/docker/apps/{{ item.docker_app }}
     #register: output
     pull: yes
     state: present
     restarted: yes
-  when: item.value == inventory_hostname
+  when: item.docker_host == inventory_hostname
   become: yes
   #become_user: "{{ ansible_user }}"
   #loop: "{{ docker_container_2_hosts|dictsort }}"
-  loop: "{{ docker_container_2_hosts | dict2items }}"
+  #loop: "{{ docker_container_2_hosts | dict2items }}"
   #tags:
   #  - install
   #  - update
   #  - never
+  loop: "{{ apps }}"
+  loop_control:
+    index_var: my_idx

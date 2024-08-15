@@ -1,0 +1,63 @@
+---
+
+- name: Create Cloudflare MX records
+  loop: "{{ dns_hosts }}"
+  when: ( item.state == "present" ) and ( item.type == "MX" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "{{ item.zone }}"
+    record:   "{{ item.record }}"
+    type:     "{{ item.type }}"
+    value:    "{{ item.value }}"
+    #solo:     "{{ item.solo }}"
+    proxied:  false
+    state:    "{{ item.state }}"
+    priority: "{{ item.priority }}"
+  register: record
+
+- name: Create Cloudflare TXT records
+  loop: "{{ dns_hosts }}"
+  when: ( item.state == "present" ) and ( item.type == "TXT" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "{{ item.zone }}"
+    record:   "{{ item.record }}"
+    type:     "{{ item.type }}"
+    value:    "{{ item.value }}"
+    #solo:     "{{ item.solo }}"
+    #proxied:  "{{ item.proxied }}"
+    state:    "{{ item.state }}"
+    #priority: "{{ item.priority }}"
+  register: record
+
+- name: Create Cloudflare A, AAAA, CNAME records
+  loop: "{{ dns_hosts }}"
+  when: ( item.state == "present" ) and ( item.type == "CNAME" or item.type == "A" or item.type == "AAAA" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "{{ item.zone }}"
+    record:   "{{ item.record }}"
+    type:     "{{ item.type }}"
+    value:    "{{ item.value }}"
+    solo:     "{{ item.solo }}"
+    proxied:  "{{ item.proxied }}"
+    state:    "{{ item.state }}"
+  register: record
+
+- name: Delete Cloudflare DNS records
+  loop: "{{ dns_hosts }}"
+  when: ( item.state == "absent" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "{{ item.zone }}"
+    record:   "{{ item.record }}"
+    type:     "{{ item.type }}"
+    #value:    "{{ item.value }}"
+    #solo:     "{{ item.solo }}"
+    #proxied:  "{{ item.proxied }}"
+    state:    "{{ item.state }}"
+  register: record

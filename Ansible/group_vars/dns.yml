@@ -1,0 +1,1121 @@
+---
+
+################################################################################
+# DNS Records
+# Enter hardware devices here. 
+# server.site.domain  = A, AAAA | RFC1918 & IPv6
+# site-server.domain  = A, AAAA | RFC1918 & IPv6
+# site.domain         = A, AAAA | Public & IPv6 
+# app.domain          = CNAME   | site.domain [ha.cozzo.net > camp.cozzo.net]
+# app.site.domain     = CNAME   | server.site.domain
+# site-app.domain     = CNAME   | site-server.domain
+#
+
+dns_hosts:
+  ## Be sure to set records as absent and then run the play to clean them up.
+  #- record: "test"
+  #  zone: "cozzo.net"
+  #  type: "CNAME"
+  #  value: "www3.cozzo.net"
+  #  proxied: true
+  #  solo: true
+  #  state: "absent"
+
+  ##############################
+  ## Template 
+  #- record: "site-server"
+  #  dynamic: true
+  #  zone: "cozzo.net"
+  #  type: "AAAA"
+  #  value: "2607:f8f8:202:3500::2"
+  #  proxied: false
+  #  solo: true
+  #  state: "present"
+  #  
+  #- record: "server.site"
+  #  dynamic: true
+  #  zone: "cozzo.net"
+  #  type: "AAAA"
+  #  value: "2607:f8f8:202:3500::2"
+  #  proxied: false
+  #  solo: true
+  #  state: "present"
+  #  
+  #- record: "site-server"
+  #  dynamic: true
+  #  zone: "cozzo.net"
+  #  type: "A"
+  #  #Placeholder IP, expecting ddclient to update
+  #  value: "1.2.3.4"
+  #  proxied: false
+  #  solo: true
+  #  state: "present"
+  #  
+  #- record: "server.site"
+  #  dynamic: true
+  #  zone: "cozzo.net"
+  #  type: "A"
+  #  #Placeholder IP, expecting ddclient to update
+  #  value: "1.2.3.4" 
+  #  proxied: false
+  #  solo: true
+  #  state: "present"
+
+  # Email
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "MX"
+    value: "aspmx.l.google.com."
+    proxied: false
+    solo: false
+    state: "present"
+    priority: 1
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "MX"
+    value: "alt1.aspmx.l.google.com."
+    proxied: false
+    solo: false
+    state: "present"
+    priority: 5
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "MX"
+    value: "alt2.aspmx.l.google.com."
+    proxied: false
+    solo: false
+    state: "present"
+    priority: 5
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "MX"
+    value: "alt3.aspmx.l.google.com."
+    proxied: false
+    solo: false
+    state: "present"
+    priority: 10
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "MX"
+    value: "alt4.aspmx.l.google.com."
+    proxied: false
+    solo: false
+    state: "present"
+    priority: 10
+
+  # TXT
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "TXT"
+    value: "v=spf1 include:_spf.google.com ~all"
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "@"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "TXT"
+    value: "google-site-verification=oryCbT_LDdJrN0Q70U4h32dwppqoIIBVav1Ii55EbB4"
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "google._domainkey"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "TXT"
+    value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EA/PVR1nXoUhQJRfHRmETL1J9JBG0rpvBeECPKKCvag5+af85SmKEd07+rJvFmocrQHccv3Trq5+k8BAKywhs2fqCkfmrgjwKjV5J8EkYmwpeNK95s0JBAg5m2/SbU41MFr9uKmO0VVf5Sf59J5e4iuM47GjWKltiyERYoQ99wIDAQAB"
+    proxied: false
+    solo: false
+    state: "present"
+
+  # DC FW
+  - record: "dc-fw"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "dc-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "fw.dc"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "dc-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "vpn"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.244.90.98"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "vpn.dc"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.244.90.98"
+    proxied: false
+    solo: true
+    state: "present"
+
+  # vCenter
+  - record: "dc-vcenter"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-vcenter"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "1.2.3.4"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "vcenter.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "vcenter.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.101"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-01
+  - record: "dc-esxi01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.201"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.201"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-01 IPMI
+  - record: "dc-esxi01-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi01-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.211"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi01-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi01-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.211"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-02
+  - record: "dc-esxi02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.202"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.202"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-02 IPMI
+  - record: "dc-esxi02-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi02-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.212"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi02-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi02-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.212"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-03
+  - record: "dc-esxi03"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi03"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.203"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi03.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi03.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.203"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-02 IPMI
+  - record: "dc-esxi03-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi03-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.213"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi03-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi03-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.213"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-04
+  - record: "dc-esxi04"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi04"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.204"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi04.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi04.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.204"
+    proxied: false
+    solo: true
+    state: "present"
+  # ESXi-04 IPMI
+  - record: "dc-esxi04-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-esxi04-ipmi"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.214"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "esxi04-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "esxi04-ipmi.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.0.214"
+    proxied: false
+    solo: true
+    state: "present"
+
+  # dnsfilter01.dc
+  - record: "dc-dnsfilter01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-dnsfilter01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.4"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dnsfilter01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dnsfilter01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.4"
+    proxied: false
+    solo: true
+    state: "present"
+  # dnsfilter02.dc
+  - record: "dc-dnsfilter02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-dnsfilter02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.5"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dnsfilter02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dnsfilter02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.5"
+    proxied: false
+    solo: true
+    state: "present"
+  # dns01.dc
+  - record: "dc-dns01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-dns01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.6"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dns01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dns01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.6"
+    proxied: false
+    solo: true
+    state: "present"
+  # dns02.dc
+  - record: "dc-dns02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-dns02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.7"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dns02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dns02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.7"
+    proxied: false
+    solo: true
+    state: "present"
+
+  # DC Reverse Proxy
+  - record: "dc"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.244.90.116"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dc"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "rproxy.dc"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.11"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "dc-rproxy"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.11"
+    proxied: false
+    solo: true
+    state: "absent"
+
+  # plex.dc
+  - record: "dc-plex"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-plex"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.30"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "plex.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "plex.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.30"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "plex"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.244.90.112"
+    proxied: false
+    solo: true
+    state: "present"
+  # downloader01.dc
+  - record: "dc-downloader01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-downloader01"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.31"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "downloader01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "downloader01.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.31"
+    proxied: false
+    solo: true
+    state: "present"
+  # downloader02.dc
+  - record: "dc-downloader02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-downloader02"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.32"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "downloader02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "downloader02.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.32"
+    proxied: false
+    solo: true
+    state: "present"
+  # downloader03.dc
+  - record: "dc-downloader03"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-downloader03"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.33"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "downloader03.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "downloader03.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.14.33"
+    proxied: false
+    solo: true
+    state: "present"
+  # webserver.dc
+  - record: "dc-webserver"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "dc-webserver"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.12.88"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "webserver.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "webserver.dc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.11.12.88"
+    proxied: false
+    solo: true
+    state: "present"
+  # service phpipam
+  - record: "phpipam"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "webserver.dc.cozzo.net."
+    proxied: false
+    solo: true
+    state: "present"
+
+  # Camp FW
+  - record: "camp-fw"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "camp-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "fw.camp"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "camp-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  # Camp WLC
+  - record: "camp-wlc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "camp-wlc"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.0.11"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "wlc.camp"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "wlc.camp"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.0.11"
+    proxied: false
+    solo: true
+    state: "present"
+  # Camp Storage
+  - record: "camp-storage"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "camp-storage"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.0.20"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "storage.camp"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2607:f8f8:202:3500::2"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "storage.camp"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.0.20"
+    proxied: false
+    solo: true
+    state: "present"
+  # Docker05 Camp
+  - record: "camp-docker05"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2601:601:600:7a42:4a9e:bdff:fe9c:11dd"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "camp-docker05"
+    dynamic: false
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.2.15"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "docker05.camp"
+    dynamic: false
+    app: true
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2601:601:600:7a42:4a9e:bdff:fe9c:11dd"
+    proxied: false
+    solo: true
+    state: "absent"
+  - record: "docker05.camp"
+    dynamic: false
+    app: true
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.2.15"
+    proxied: false
+    solo: true
+    state: "present"
+  # Camp Reverse Proxy
+  - record: "camp"
+    dynamic: true
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "73.42.208.81"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "camp"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "AAAA"
+    value: "2601:601:600:7a42:4a9e:bdff:fe9c:11dd"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "rproxy.camp"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.2.15"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "camp-rproxy"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "10.21.2.15"
+    proxied: false
+    solo: true
+    state: "absent"
+
+
+  # Mom FW
+  - record: "md-fw"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "md-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "fw.md"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "md-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+
+  # SkiPatrol FW
+  - record: "sp-fw"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "sp-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "fw.sp"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "sp-fw.cozzo.net.fortiddns.com."
+    proxied: false
+    solo: true
+    state: "present"
+
+
+
+
+

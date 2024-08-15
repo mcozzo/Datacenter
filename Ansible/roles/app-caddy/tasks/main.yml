@@ -1,63 +1,195 @@
 ---
-# Docker stuff
+
+# This mapping bit strips the name off the front and forces the 
+- name: docker mapping
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  debug:
+    #msg: 'Public URL: {{ item.1 }} CNAME: {{ item.0.proxy_server }}'
+    #msg: "APP: {{ item.docker_host }} Hostname: {{ inventory_hostname }}"
+    #msg: "{{ inventory_hostname | split('.', 1) }}"
+    msg: "{{ item.name }} Runs on {{ hostname.1 }}"
+  #loop: "{{ apps | subelements('proxy_urls') }}"
+  loop: "{{ apps }}"
+  loop_control:
+    index_var: my_idx
+  tags:
+    - always
+  when: hostname.1 == item.proxy_server
 
 # Ensure directories existing
-- name: Verify app directories
+- name: Verify app config directory
   file:
-    path: "{{ item }}"
+    path: "{{ container_root }}/{{ inventory_hostname }}/caddy"
     state: directory
     owner: "1001"
     group: "1001"
+    recurse: true
     #owner: "{{ ansible_user }}"
     #group: "{{ ansible_user }}"
   become: true
-#  become_user: mattcozzolino
-  with_items:
-#    - /mnt/docker/blue/nginx/config
-    - "{{ container_root }}/{{ inventory_hostname }}/caddy"
-    - "{{ container_root }}/{{ inventory_hostname }}/caddyfiles"
-    - "{{ container_root }}/{{ inventory_hostname }}/config"
-    - "{{ container_root }}/{{ inventory_hostname }}/data"
-    - "{{ container_root }}/{{ inventory_hostname }}/site"
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
 
-- name: Place main Caddyfile
-  become: true
-  template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dst }}"
+# Ensure directories existing
+- name: Verify sub app director
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  file:
+    path: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles"
+    state: directory
     owner: "1001"
     group: "1001"
-  with_items:
-    - { src: "Caddyfile.j2", dst: "{{ container_root }}/{{ inventory_hostname }}/caddy/Caddyfile" }
-    
-- name: Place public site specific Caddyfiles
+    recurse: true
+    #owner: "{{ ansible_user }}"
+    #group: "{{ ansible_user }}"
   become: true
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
+
+- name: Verify app config directory
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  file:
+    path: "{{ container_root }}/{{ inventory_hostname }}/config"
+    state: directory
+    owner: "1001"
+    group: "1001"
+    recurse: true
+    #owner: "{{ ansible_user }}"
+    #group: "{{ ansible_user }}"
+  become: true
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
+
+- name: Verify app data directory
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  file:
+    path: "{{ container_root }}/{{ inventory_hostname }}/data"
+    state: directory
+    owner: "1001"
+    group: "1001"
+    recurse: true
+    #owner: "{{ ansible_user }}"
+    #group: "{{ ansible_user }}"
+  become: true
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
+
+- name: Verify app site directory
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  file:
+    path: "{{ container_root }}/{{ inventory_hostname }}/site"
+    state: directory
+    owner: "1001"
+    group: "1001"
+    recurse: true
+    #owner: "{{ ansible_user }}"
+    #group: "{{ ansible_user }}"
+  become: true
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
+
+- name: Place main Caddyfile
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  template:
+    src: "Caddyfile.j2"
+    dest: "{{ container_root }}/{{ inventory_hostname }}/caddy/Caddyfile"
+    owner: "1001"
+    group: "1001"
+  become: true
+  notify:
+    - Restart Caddy
+  loop: "{{ apps }}"
+  when:
+    - item.docker_host == inventory_hostname
+
+# Realized this was in here twice while I was talking to Neil. 
+#- name: Place public site specific Caddyfiles
+#  vars: 
+#    hostname: "{{ inventory_hostname | split('.', 1) }}"
+#  become: true
+#  #debug: 
+#  #  msg: "SRV: {{ container_root }}/caddy.{{ inventory_hostname }}/caddyfiles/{{ item.docker_app }}.caddy"
+#  template:
+#    src: "public-site.fqdn.caddy.j2"
+#    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.docker_app }}.caddy"
+#    owner: "1001"
+#    group: "1001"
+#    force: true
+#  notify:
+#    - Restart Caddy
+#  loop: "{{ apps }}"
+#  when:
+#    - item.public       == true
+#    - item.proxy        == true
+#    - item.proxy_server == hostname.1
+
+- name: Place public site specific Caddyfiles
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
+  become: true
+  #debug: 
+  #  msg: "SRV: {{ container_root }}/caddy.{{ inventory_hostname }}/caddyfiles/{{ item.docker_app }}.caddy"
   template:
     src: "public-site.fqdn.caddy.j2"
-    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.name }}.caddy"
+    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.docker_app }}.caddy"
     owner: "1001"
     group: "1001"
     force: true
   notify:
-    - Restart conatiner
-  with_items: "{{ proxy_sites }}"
+    - Restart Caddy
+  loop: "{{ apps }}"
   when:
     - item.public       == true
     - item.proxy        == true
-    - item.proxy_server == inventory_hostname
+    - item.proxy_server == hostname.1
+
 
 - name: Place private site specific Caddyfiles
+  vars: 
+    hostname: "{{ inventory_hostname | split('.', 1) }}"
   become: true
   template:
     src: "private-site.fqdn.caddy.j2"
-    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.name }}.caddy"
+    dest: "{{ container_root }}/{{ inventory_hostname }}/caddyfiles/{{ item.docker_app }}.caddy"
     owner: "1001"
     group: "1001"
     force: true
   notify:
-    - Restart conatiner
-  with_items: "{{ proxy_sites }}"
+    - Restart Caddy
+  loop: "{{ apps }}"
   when:
     - item.public       == false
     - item.proxy        == true
-    - item.proxy_server == inventory_hostname
+    - item.proxy_server == hostname.1
+
+#- name: docker mapping
+#  debug:
+#    #msg: 'Public URL: {{ item.1 }} CNAME: {{ item.0.proxy_server }}'
+#    msg: "APP: {{ item.docker_host }} Hostname: {{ inventory_hostname }}"
+#  #loop: "{{ apps | subelements('proxy_urls') }}"
+#  loop: "{{ apps }}"
+#  loop_control:
+#    index_var: my_idx
+#  tags:
+#    - always
+

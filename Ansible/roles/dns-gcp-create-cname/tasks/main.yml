@@ -1,0 +1,106 @@
+---
+
+- name: Connect to managed zone
+  delegate_to: 127.0.0.1
+  google.cloud.gcp_dns_managed_zone:
+    project: "{{ gcp_project }}"
+    auth_kind: serviceaccount
+    service_account_file: "{{ gcp_vars_file }}"
+    dns_name: "{{ gcp_dns_name }}"
+    description: Reverse Proxy DNS Set by ansible
+    name: "{{ gcp_zone }}"
+    state: present
+  register: gcp_managed_zone
+
+#- name: Examine the tags
+#  delegate_to: 127.0.0.1
+#  debug:
+#    #msg: '{{ item.1 }} AND {{ item.0.proxy_server }}'
+#    #msg: '{{ item.dns.key }}. AND {{ item.dns.value }}'
+#    #msg: "{{ item }}"
+#    msg: "CNAME: {{ item.0.proxy_server }} NAME: {{ item.1  }}"
+#  #with_dict: "{{ apps }}"
+#  #with_subelements:
+#  #  - apps
+#  #  - dns
+#  #  #- "{{ dns }}"
+#  #loop: '{{ apps }}'
+#  #loop: '{{ apps | subelements("dns") }}'
+#  #loop: '{{ apps | flatten(dns) }}'
+#  #loop: '{{ apps | item.dns | list }}'
+#  #loop: "{{ lookup('ansible.builtin.dict', apps ) }}"
+#  #loop: "{{ apps | subelements('proxy_urls') }}"
+#  loop: "{{ apps | subelements('proxy_urls') }}"
+#  #with_subelements: 
+#  #  - "{{ apps }}"
+#  #  - dns
+#  loop_control:
+#    #extended: true
+#    index_var: my_idx
+#  tags:
+#    - always
+
+- name: Log public proxy DNS entries
+  debug:
+    msg: 'Public URL: {{ item.1 }} CNAME: {{ item.0.proxy_server }}'
+  loop: "{{ apps | subelements('proxy_urls') }}"
+  loop_control:
+    index_var: my_idx
+  tags:
+    - always
+
+#- name: Clear DNS Records
+#  delegate_to: 127.0.0.1
+#  google.cloud.gcp_dns_resource_record_set:
+#    project: "{{ gcp_project }}"
+#    auth_kind: serviceaccount
+#    service_account_file: "{{ gcp_vars_file }}"
+#    managed_zone: "{{ gcp_managed_zone }}"
+#    state: absent
+#    ################################
+#    #name: "ansible.cozzo.net."
+#    #type: A
+#    #ttl: 300
+#    #target: "1.1.1.2"
+#    ################################
+#    name: "{{ item.1 }}."
+#    type: CNAME
+#    ttl: 300
+#    target: "{{ item.0.proxy_server }}"
+#    ################################
+#  loop: '{{ apps | subelements("url") }}'
+#  loop_control:
+#    index_var: my_idx
+#  #register: stderr
+
+#- name: Pause because APIs are slow
+#  pause:
+#    seconds: 10
+
+- name: Put public proxy DNS entries
+  delegate_to: 127.0.0.1
+  google.cloud.gcp_dns_resource_record_set:
+    project: "{{ gcp_project }}"
+    auth_kind: serviceaccount
+    service_account_file: "{{ gcp_vars_file }}"
+    managed_zone: "{{ gcp_managed_zone }}"
+    state: present
+    ################################
+    #name: "AAAAAAAAAAA.cozzo.net."
+    #type: CNAME
+    #ttl: 300
+    #target: "dc.cozzo.net."
+    ################################
+    name: "{{ item.1 }}."
+    type: CNAME
+    ttl: 300
+    target: "{{ item.0.proxy_server }}."
+    ################################
+  loop: "{{ apps | subelements('proxy_urls') }}"
+  loop_control:
+    index_var: my_idx
+
+#- name: Pause for 60 seconds to let dns update
+#  pause:
+#    seconds: 60
+

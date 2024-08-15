@@ -1,4 +1,4 @@
-{{ item.url | join(', ') }} {
+{{ item.proxy_urls | join(', ') }} {
 	reverse_proxy {{ item.proxy_pass }}
 
 	header {

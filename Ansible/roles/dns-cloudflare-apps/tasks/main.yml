@@ -1,0 +1,39 @@
+---
+- name: Create DNS Container > Host records
+  loop: "{{ apps }}"
+  #when: ( item.state == "present" ) and ( item.type == "MX" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "cozzo.net"
+    record:   "{{ item.docker_app }}" # Container
+    type:     "CNAME"
+    value:    "{{ item.docker_host }}" # Host
+    #solo:     "{{ item.solo }}"
+    proxied:  false
+    state:    "present"
+  #register: record
+  #register: proxy_urls01
+  #loop: "{{ apps | subelements('proxy_urls') }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Create DNS App > Proxy records
+  loop: "{{ apps | subelements('proxy_urls') }}"
+  #when: ( item.state == "present" ) and ( item.type == "MX" )
+  community.general.cloudflare_dns:
+    account_email: "{{ cloudflare_user }}"
+    account_api_key: "{{ cloudflare_pass }}"
+    zone:     "cozzo.net"
+    record:   "{{ item.1 }}" # URLs to proxy
+    type:     "CNAME"
+    value:    "{{ item.0.proxy_server }}" # RProxy server
+    #solo:     "{{ item.solo }}"
+    proxied:  false
+    state:    "present"
+  #register: record
+  #register: proxy_urls01
+  loop_control:
+    index_var: my_idx
+
+

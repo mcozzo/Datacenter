@@ -1,0 +1,48 @@
+---
+# This play configures the apps on the appropriate reverse proxy caddy servers
+
+# DNS Architecture
+# Issues: A record is DYNDNS, AAAA Is mostly static
+#
+# Public: service.cozzo.net CNAME > site.cozzo.net
+# Service: service.site.cozzo.net, site-service.cozzo.net
+# Server : server.site.cozzo.net,  site-server.cozzo.net
+# 
+# server.site.cozzo.net > A,AAAA RFC1918
+# site-server.cozzo.net > A,AAAA RFC1918
+# service.site.cozzo.net > CNAME > server.site.cozzo.net
+# site-service.cozzo.net > CNAME > site-server.cozzo.net
+# Public: service.cozzo.net > CNAME > site.cozzo.net
+# Private: # service.cozzo.net > CNAME > rproxy.site.cozzo.net
+
+
+- name: Create proxy CNAME records
+  #hosts: localhost
+  hosts:
+    #- reverse_proxy
+    - localhost
+  #connection: local
+  roles:
+    - dns-cloudflare-apps
+  vars_files:
+    - ./group_vars/apps.yml
+    - ./group_vars/cloudflare.yml
+
+- name: Configure and git clone
+  hosts:
+    - reverse_proxy
+  roles:
+    - docker-git
+  become: yes
+
+- name: Configure reverse proxy
+  hosts:
+    - reverse_proxy
+  roles:
+    - app-caddy
+  #become: yes
+  vars_files:
+    - ./group_vars/apps.yml
+    - ./group_vars/docker.yml
+
+

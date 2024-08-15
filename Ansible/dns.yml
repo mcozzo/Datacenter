@@ -1,0 +1,28 @@
+---
+# This play configures the apps on the appropriate reverse proxy caddy servers
+
+#- name: Create public DNS records
+#  #hosts: localhost
+#  hosts:
+#    #- reverse_proxy
+#    - localhost
+#  #connection: local
+#  roles:
+#    - dns-gcp-create-cname
+#  vars_files:
+#    - ./group_vars/apps.yml
+#    - ./group_vars/docker.yml
+
+
+- name: Create private DNS records
+  #hosts: localhost
+  hosts:
+    #- reverse_proxy
+    - localhost
+  #connection: local
+  roles:
+    - dns-technitium-create-cname
+  vars_files:
+    - ./group_vars/apps.yml
+    - ./group_vars/docker.yml
+

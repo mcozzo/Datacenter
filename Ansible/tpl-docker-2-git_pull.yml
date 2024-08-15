@@ -5,7 +5,6 @@
     - reverse_proxy
     - downloader
     - plex
-    - dev
     - docker_camp
     - docker_md
     - nginx

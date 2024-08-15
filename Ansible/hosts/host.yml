@@ -21,6 +21,8 @@ all:
           ansible_host: 10.11.14.6
         dns02.dc.cozzo.net:
           ansible_host: 10.11.14.7
+        dns01.camp.cozzo.net:
+          ansible_host: 10.21.2.15
     downloader:
       hosts:
         downloader01.dc.cozzo.net:
@@ -33,10 +35,10 @@ all:
       hosts:
         plex.dc.cozzo.net:
           ansible_host: 10.11.14.30
-    dev:
-      hosts:
-        test.dc.cozzo.net:
-          ansible_host: 10.11.14.41
+    #dev:
+    #  hosts:
+    #    test.dc.cozzo.net:
+    #      ansible_host: 10.11.14.41
     docker_camp:
       hosts:
         docker00.camp.cozzo.net:
@@ -51,6 +53,7 @@ all:
         #  ansible_host: 10.21.2.14
         docker05.camp.cozzo.net:
           ansible_host: 10.21.2.15
+        #caddy.camp.cozzo.net:
     docker_trident:
       hosts:
         downloader01.dc.cozzo.net:
@@ -61,8 +64,8 @@ all:
           ansible_host: 10.11.14.33
     docker_md:
       hosts:
-        docker00.md.cozzo.net:
-          ansible_host: 10.21.5.27
+        #docker00.md.cozzo.net:
+        #  ansible_host: 10.21.5.27
         #  ansible_host: 10.21.0.16
     virtual_machines:
       hosts:
@@ -87,14 +90,14 @@ all:
         docker03.camp.cozzo.net:
         #docker04.camp.cozzo.net:
         docker05.camp.cozzo.net:
-        docker00.md.cozzo.net:
+        #docker00.md.cozzo.net:
     travel_pi:
       hosts:
-        docker00.pi.cozzo.net:
-          ansible_host: 192.168.8.10
+        #docker00.pi.cozzo.net:
+        #  ansible_host: 192.168.8.10
     reverse_proxy:
       hosts:
-        caddy.dc.cozzo.net:
+        rproxy.dc.cozzo.net: #This needs to be the same as the docker config for the scripting to work.
           ansible_host: 10.11.14.11
-        caddy.camp.cozzo.net:
+        rproxy.camp.cozzo.net:
           ansible_host: 10.21.2.15

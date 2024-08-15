@@ -1,0 +1,53 @@
+---
+
+- name: Log private server DNS entries
+  debug:
+    msg: 'Private URL: {{ item.docker_app }} CNAME: {{ item.docker_host }}'
+    #msg: "{{ item }}"
+  loop: "{{ apps }}"
+  #loop: "{{ apps | subelements('private_urls') }}"
+  loop_control:
+    index_var: my_idx
+  when:
+    - item.docker_host == inventory_hostname
+
+- name: Log private server DNS entries
+  debug:
+    msg: 'Private URL: {{ item.docker_app }} CNAME: {{ item.docker_host }}'
+    #msg: "{{ item }}"
+  loop: "{{ apps }}"
+  #loop: "{{ apps | subelements('private_urls') }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Put private server DNS entries
+  #debug:
+  #  msg: "{{ dns01_server }}/api/zones/records/add?token={{ dns01_token }}&domain={{ item.1 }}&type=CNAME&overwrite=true&cname={{ item.0.proxy_server }}"
+  ansible.builtin.uri:
+    url: "{{ dns01_server }}/api/zones/records/add?token={{ dns01_token }}&domain={{ item.docker_app }}&type=CNAME&overwrite=true&cname={{ item.docker_host }}"
+    #url: "{{ proxy_urls01_server }}/api/zones/records/add?token={{ proxy_urls01_token }}&domain=aaaaa.cozzo.net&zone=cozzo.net&type=CNAME&overwrite=true&cname=dssssc.cozzo.net"
+  register: proxy_urls01
+  loop: "{{ apps }}"
+  loop_control:
+    index_var: my_idx
+  when:
+    - item.docker_host != inventory_hostname
+
+- name: Log private proxy DNS entries
+  debug:
+    msg: 'Private URL: {{ item.1 }} CNAME: {{ item.0.proxy_server }}'
+  loop: "{{ apps | subelements('proxy_urls') }}"
+  loop_control:
+    index_var: my_idx
+
+- name: Put private proxy DNS entries
+  #debug:
+  #  msg: "{{ dns01_server }}/api/zones/records/add?token={{ dns01_token }}&domain={{ item.1 }}&type=CNAME&overwrite=true&cname={{ item.0.proxy_server }}"
+  ansible.builtin.uri:
+    url: "{{ dns01_server }}/api/zones/records/add?token={{ dns01_token }}&domain={{ item.1 }}&type=CNAME&overwrite=true&cname={{ item.0.proxy_server }}"
+    #url: "{{ proxy_urls01_server }}/api/zones/records/add?token={{ proxy_urls01_token }}&domain=aaaaa.cozzo.net&zone=cozzo.net&type=CNAME&overwrite=true&cname=dssssc.cozzo.net"
+  register: proxy_urls01
+  loop: "{{ apps | subelements('proxy_urls') }}"
+  loop_control:
+    index_var: my_idx
+
