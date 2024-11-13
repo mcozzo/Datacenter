@@ -15,12 +15,12 @@
   docker_compose:
     build: yes
     #project_src: /Users/mattcozzolino/GitHub/Docker/apps/homeassistant-pi/docker-compose.yml
-    project_src: /mnt/git/docker/apps/{{ item.docker_app }}
+    project_src: /mnt/git/docker/apps/{{ item.app }}
     #register: output
     pull: yes
     state: present
     restarted: yes
-  when: item.docker_host == inventory_hostname
+  when: item.name == inventory_hostname
   become: yes
   #become_user: "{{ ansible_user }}"
   #loop: "{{ docker_container_2_hosts|dictsort }}"
@@ -29,6 +29,20 @@
   #  - install
   #  - update
   #  - never
-  loop: "{{ apps }}"
+  loop: "{{ proxy_servers }}"
   loop_control:
     index_var: my_idx
+
+#- name: Restart Caddy
+#  #debug:
+#  #  msg: 'Restart the caddy service'
+#  community.docker.docker_compose_v2:
+#    #build: yes
+#    project_src: /mnt/git/docker/apps/{{ item.app }}
+#    pull: missing
+#    state: restarted
+#  when: item.name == inventory_hostname
+#  become: yes
+#  loop: "{{ proxy_servers }}"
+#  loop_control:
+#    index_var: my_idx

@@ -142,6 +142,36 @@ dns_hosts:
     solo: false
     state: "present"
 
+  #################################################################
+  # Website
+  - record: "www"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "https://sites.google.com/cozzo.net/www"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "joann"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "https://sites.google.com/cozzo.net/joanncozzolino"
+    proxied: false
+    solo: true
+    state: "present"
+  - record: "bill"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "CNAME"
+    value: "https://sites.google.com/cozzo.net/billcozzolino"
+    proxied: false
+    solo: true
+    state: "present"
+
   # DC FW
   - record: "dc-fw"
     dynamic: false 
@@ -691,7 +721,7 @@ dns_hosts:
     proxied: false
     solo: true
     state: "present"
-  - record: "dc-rproxy"
+  - record: "in-dc"
     dynamic: false  
     app: false
     zone: "cozzo.net"
@@ -699,7 +729,7 @@ dns_hosts:
     value: "10.11.14.11"
     proxied: false
     solo: true
-    state: "absent"
+    state: "present"
 
   # plex.dc
   - record: "dc-plex"
@@ -1064,16 +1094,15 @@ dns_hosts:
     proxied: false
     solo: true
     state: "present"
-  - record: "camp-rproxy"
+  - record: "in-camp"
     dynamic: false  
     app: false
     zone: "cozzo.net"
     type: "A"
-    value: "10.21.2.15"
+    value: "10.11.14.11"
     proxied: false
     solo: true
-    state: "absent"
-
+    state: "present"
 
   # Mom FW
   - record: "md-fw"

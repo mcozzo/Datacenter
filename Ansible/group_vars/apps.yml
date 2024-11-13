@@ -6,11 +6,13 @@
 container_root: "/mnt/docker/configs"
 proxy_servers:
   - name: "dc.cozzo.net"
-    host: "caddy.dc.cozzo.net"
-    ip: "10.11.14.11"
+    #host: "rproxy.dc.cozzo.net"
+    app: "caddy.dc.cozzo.net"
+    #ip: "10.11.14.11"
   - name: "camp.cozzo.net"
-    host: "caddy.camp.cozzo.net"
-    ip: "10.21.2.15"  
+    #host: "rproxy.camp.cozzo.net"
+    app: "caddy.camp.cozzo.net"
+    #ip: "10.21.2.15"  
 
 ################################################################################
 # GCP config
@@ -23,40 +25,13 @@ gcp_zone: cozzonet
 ################################################################################
 # Local DNS
 # 
-dns01_server: http://dns01.dc.cozzo.net:5380 # no trailing /
-dns01_token: 34655d15d986ea2751590856565fc718c9b6599a069f5d57657ca24aea5f94a0
+#dns01_server: http://dns01.dc.cozzo.net:5380 # no trailing /
+#dns01_token: ----
 
 
 ################################################################################
 # Site config
 # The giant array that conatins all of the proxy matching. 
-#
-#proxy_servers:
-#  caddy.camp.cozzo.net: "camp.cozzo.net"
-#  caddy.dc.cozzo.net: "dc.cozzo.net"
-# THIS IS AN EXAMPLE
-#proxy_sites:
-#  - name:         "homeassistant.cozzo.net"            # The friendly service name
-#    docker_app:   "homeassistant.camp.cozzo.net"       # The FQDN that maps to the actual server
-#    docker_host:  "docker05.camp.cozzo.net"            # The FQDN of the server that runs the app. This should be an A record. 
-#    proxy_urls:                                        # DNS entries that point to the proxy server
-#        - "homeassistant.cozzo.net"
-#        - "homeassistant.camp.cozzo.net"
-#    proxy_pass:   "homeassistant.camp.cozzo.net:8123"  # The FQDN of the inside server, ports and everything. 
-#    proxy_server: "caddy.camp.cozzo.net"               # What server should it run on. Make sure there is a relevant entry in hosts.yml
-#    proxy: true                                        # Should this be proxied? the proxy, doesn't proxy it's self.  
-#    public: true                                       # Public or private? 
-#
-#  - name: "etc.cozzo.net"
-
-# proxy_servers.host  CNAME:proxy_servers.name  A:proxy_servers.ip
-# caddy.dc.cozzo.net  CNAME:dc.cozzo.net        A:10.11.14.11
-
-## Rules: 
-# internally everything should reference the FQDN, app.site.cozzo.net. 
-# Apps run on servers. that's referenced by a cname. app.site.cozzo.net > server.site.cozzo.net
-# app data is stored in the fqdn path. /mnt/docker/config/app.site.cozzo.net/config/
-# front end proxy sites should be short and can point to the site load balancer. app.cozzo.net > dc.cozzo.net
 
 # LB: caddy.dc.cozzo.net = CNAME:dc.cozzo.net       = A:x.x.x.x
 # App: app.dc.cozzo.net  = CNAME:srv.dc.cozzo.net   = A:x.x.x.x
@@ -73,33 +48,20 @@ dns01_token: 34655d15d986ea2751590856565fc718c9b6599a069f5d57657ca24aea5f94a0
 # ha.cozzo.net                 CNAME:  proxy_server > homeassistant.camp.cozzo.net:1234
 # etc...
 
-
-
-
 apps:
 #############################################################
-# These two are special because they are the actual proxy servers. 
-# Move this into the proxy server config.   
-  - name: "caddy.dc"
-    docker_app: "caddy.dc.cozzo.net" 
-    docker_host: "rproxy.dc.cozzo.net" 
-    proxy_urls: 
-      - "dc-caddy.cozzo.net" 
-    proxy_pass: ""
-    proxy_server: "dc.cozzo.net" 
-    proxy: false
-    public: true
-
-  - name: "caddy.camp"
-    docker_app: "caddy.camp.cozzo.net" 
-    docker_host: "rproxy.camp.cozzo.net" 
-    proxy_urls: 
-      - "camp-caddy.cozzo.net" 
-    proxy_pass: ""
-    proxy_server: "camp.cozzo.net" 
-    proxy: false
-    public: true
-#############################################################
+#  - name: "ha"                                       #Name of the service (Doesn't actually get used?)
+#    docker_app: "homeassistant.camp.cozzo.net"       # FQDN of the app. CNAME to <docker_host> It will also end up getting passed as: docker-compose -f <docker_app> up -d 
+#    docker_host: "docker05.camp.cozzo.net"           # Where does the host run. Reflects an A recrod
+#    proxy_urls:                                      # Valid certificate alt names. Also CNAME to <proxy_server>
+#      - "homeassistant.cozzo.net"
+#      - "ha.cozzo.net"
+#      - "camp-ha.cozzo.net"
+#    proxy_pass: "homeassistant:8123"                 #Matches the container name for inter container dns. Entry in the caddyfile for the site. 
+#    #proxy_pass: "homeassistant.camp.cozzo.net:8123" #FQDN if needed.  
+#    proxy_server: "camp.cozzo.net"                   # <proxy_urls> CNAME: <proxy_server> 
+#    proxy: true                                      # Make an entry
+#    public: true                                     # Public or private
 
 # Camp
   - name: "ha"
@@ -124,7 +86,7 @@ apps:
     #proxy_pass: "zwave.camp.cozzo.net:8091"
     proxy_pass: "zwave-js-ui:8091"
     #proxy_pass: "10.21.2.15:8091"
-    proxy_server: "rproxy.cozzo.net" 
+    proxy_server: "camp.cozzo.net" 
     proxy: true
     public: false
 
@@ -135,7 +97,7 @@ apps:
       - "nodered.cozzo.net"
       - "camp-nodered.cozzo.net"
     proxy_pass: "nodered:1880"
-    proxy_server: "rproxy.camp.cozzo.net" 
+    proxy_server: "camp.cozzo.net" 
     proxy: true
     public: false
 
@@ -149,7 +111,7 @@ apps:
       - "camp-mqtt.cozzo.net"
       - "camp-mosquitomqtt.cozzo.net"
     proxy_pass: "mosquittomqtt:1883"
-    proxy_server: "rproxy.camp.cozzo.net" 
+    proxy_server: "camp.cozzo.net" 
     proxy: false
     public: false
 
@@ -160,7 +122,7 @@ apps:
       - "grafana.cozzo.net"
       - "camp-grafana.cozzo.net"
     proxy_pass: "grafana:3001"
-    proxy_server: "rproxy.camp.cozzo.net" 
+    proxy_server: "camp.cozzo.net" 
     proxy: true
     public: false
 
@@ -171,7 +133,7 @@ apps:
       - "influxdb.cozzo.net"
       - "camp-influxdb.cozzo.net"
     proxy_pass: "influxdb:8086"
-    proxy_server: "rproxy.camp.cozzo.net" 
+    proxy_server: "camp.cozzo.net" 
     proxy: true
     public: false
 
@@ -182,7 +144,7 @@ apps:
       - "frigate.cozzo.net"
       - "camp-frigate.cozzo.net"
     proxy_pass: "frigate:5000"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "camp.cozzo.net" 
     proxy: true
     public: false
 
@@ -197,7 +159,7 @@ apps:
       - "dashboard.cozzo.net"
       - "dash.cozzo.net"
     proxy_pass: "heimdall.dc.cozzo.net:9118"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -221,7 +183,7 @@ apps:
       - "prowlarr.cozzo.net"
       - "dc-prowlarr.cozzo.net"
     proxy_pass: "prowlarr.dc.cozzo.net:9696"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -232,7 +194,7 @@ apps:
       - "radarr.cozzo.net"
       - "dc-radarr.cozzo.net"
     proxy_pass: "radarr:7878"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -243,7 +205,7 @@ apps:
       - "radarr4k.cozzo.net"
       - "dc-radarr4k.cozzo.net"
     proxy_pass: "radarr4k:7877"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -253,8 +215,8 @@ apps:
     proxy_urls: 
       - "sonarr.cozzo.net"
       - "dc-sonarr.cozzo.net"
-    proxy_pass: "sonarr:8989"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_pass: "http://sonarr.dc.cozzo.net:8989"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -265,7 +227,7 @@ apps:
       - "sonarr4k.cozzo.net"
       - "dc-sonarr4k.cozzo.net"
     proxy_pass: "sonarr4k:8988"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -276,7 +238,7 @@ apps:
       - "qbittorrent.cozzo.net"
       - "dc-qbittorrent.cozzo.net"
     proxy_pass: "qbittorrent.dc.cozzo.net:8080"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net" 
     proxy: true
     public: false
 
@@ -288,7 +250,7 @@ apps:
       - "dc-sabnzbd.cozzo.net"
       - "sab.cozzo.net"
     proxy_pass: "sabnzbd.dc.cozzo.net:8081"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -299,7 +261,7 @@ apps:
       - "tautulli.cozzo.net"
       - "dc-tautulli.cozzo.net"
     proxy_pass: "tautulli.dc.cozzo.net:8181"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -310,7 +272,7 @@ apps:
       - "ombi.cozzo.net"
       - "dc-ombi.cozzo.net"
     proxy_pass: "ombi.dc.cozzo.net:3579"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -322,7 +284,7 @@ apps:
       - "dc-bazarr.cozzo.net"
       - "subtitles.cozzo.net"
     proxy_pass: "bazarr.dc.cozzo.net:6767"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -333,7 +295,7 @@ apps:
       - "readarr.cozzo.net"
       - "dc-readarr.cozzo.net"
     proxy_pass: "readarr.dc.cozzo.net:8787"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -344,7 +306,7 @@ apps:
       - "listenarr.cozzo.net"
       - "dc-listenarr.cozzo.net"
     proxy_pass: "listenarr.dc.cozzo.net:8788"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false
 
@@ -354,6 +316,6 @@ apps:
     proxy_urls: 
       - "recyclarr.cozzo.net"
     proxy_pass: "recyclarr.dc.cozzo.net:1001"
-    proxy_server: "rproxy.camp.cozzo.net"
+    proxy_server: "dc.cozzo.net"
     proxy: true
     public: false

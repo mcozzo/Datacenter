@@ -40,7 +40,7 @@ docker_container_2_hosts:
   grafana.camp.cozzo.net:       docker05.camp.cozzo.net
   #esphome.cozzo.net:           docker00.camp.cozzo.net
   #nginx.cozzo.net:             nginx.dc.cozzo.net
-  #plex-camp.cozzo.net:         docker05.camp.cozzo.net
+  plex-camp.cozzo.net:          docker05.camp.cozzo.net
   #stash.camp.cozzo.net:         docker05.camp.cozzo.net
   influxdb.camp.cozzo.net:      docker05.camp.cozzo.net
   frigate.camp.cozzo.net:       docker05.camp.cozzo.net

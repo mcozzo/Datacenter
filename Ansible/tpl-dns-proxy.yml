@@ -16,18 +16,18 @@
 # Private: # service.cozzo.net > CNAME > rproxy.site.cozzo.net
 
 
-- name: Create proxy CNAME records
-  #hosts: localhost
-  hosts:
-    #- reverse_proxy
-    - localhost
-  #connection: local
-  roles:
-    - dns-cloudflare-apps
-  vars_files:
-    - ./group_vars/apps.yml
-    - ./group_vars/cloudflare.yml
-
+#- name: Create proxy CNAME records
+#  #hosts: localhost
+#  hosts:
+#    #- reverse_proxy
+#    - localhost
+#  #connection: local
+#  roles:
+#    - dns-cloudflare-apps
+#  vars_files:
+#    - ./group_vars/apps.yml
+#    - ./group_vars/cloudflare.yml
+#
 - name: Configure and git clone
   hosts:
     - reverse_proxy

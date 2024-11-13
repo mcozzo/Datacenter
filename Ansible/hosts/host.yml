@@ -97,7 +97,7 @@ all:
         #  ansible_host: 192.168.8.10
     reverse_proxy:
       hosts:
-        rproxy.dc.cozzo.net: #This needs to be the same as the docker config for the scripting to work.
-          ansible_host: 10.11.14.11
-        rproxy.camp.cozzo.net:
+        dc.cozzo.net: #This needs to be the same as the docker config for the scripting to work.
+          ansible_host: 10.11.14.11 #Use the Internal IP so we can SSH 
+        camp.cozzo.net:
           ansible_host: 10.21.2.15
