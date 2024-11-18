@@ -119,7 +119,7 @@ dns_hosts:
     app: false
     zone: "cozzo.net"
     type: "TXT"
-    value: "v=spf1 include:_spf.google.com ~all"
+    value: '"v=spf1 include:_spf.google.com ~all"'
     proxied: false
     solo: false
     state: "present"
@@ -128,7 +128,7 @@ dns_hosts:
     app: false
     zone: "cozzo.net"
     type: "TXT"
-    value: "google-site-verification=oryCbT_LDdJrN0Q70U4h32dwppqoIIBVav1Ii55EbB4"
+    value: '"google-site-verification=oryCbT_LDdJrN0Q70U4h32dwppqoIIBVav1Ii55EbB4"'
     proxied: false
     solo: false
     state: "present"
@@ -137,19 +137,66 @@ dns_hosts:
     app: false
     zone: "cozzo.net"
     type: "TXT"
-    value: "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EA/PVR1nXoUhQJRfHRmETL1J9JBG0rpvBeECPKKCvag5+af85SmKEd07+rJvFmocrQHccv3Trq5+k8BAKywhs2fqCkfmrgjwKjV5J8EkYmwpeNK95s0JBAg5m2/SbU41MFr9uKmO0VVf5Sf59J5e4iuM47GjWKltiyERYoQ99wIDAQAB"
+    value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EA/PVR1nXoUhQJRfHRmETL1J9JBG0rpvBeECPKKCvag5+af85SmKEd07+rJvFmocrQHccv3Trq5+k8BAKywhs2fqCkfmrgjwKjV5J8EkYmwpeNK95s0JBAg5m2/SbU41MFr9uKmO0VVf5Sf59J5e4iuM47GjWKltiyERYoQ99wIDAQAB"'
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "_DMARC"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "TXT"
+    value: '"v=DMARC1; p=none; rua=mailto:ea72cce83b224d9baa19fe75b0d78993@dmarc-reports.cloudflare.net"'
+    #value: '"v=DMARC1; p=quarantine; rua=mailto:ea72cce83b224d9baa19fe75b0d78993@dmarc-reports.cloudflare.net"'
     proxied: false
     solo: false
     state: "present"
 
-  #################################################################
+
+  ##################################################################
   # Website
+  - record: "@"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.239.32.21"
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "@"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.239.34.21"
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "@"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.239.36.21"
+    proxied: false
+    solo: false
+    state: "present"
+  - record: "@"
+    dynamic: false  
+    app: false
+    zone: "cozzo.net"
+    type: "A"
+    value: "216.239.38.21"
+    proxied: false
+    solo: false
+    state: "present"
   - record: "www"
     dynamic: false 
     app: false
     zone: "cozzo.net"
     type: "CNAME"
-    value: "https://sites.google.com/cozzo.net/www"
+    value: "ghs.googlehosted.com."
     proxied: false
     solo: true
     state: "present"
@@ -158,7 +205,7 @@ dns_hosts:
     app: false
     zone: "cozzo.net"
     type: "CNAME"
-    value: "https://sites.google.com/cozzo.net/joanncozzolino"
+    value: "ghs.googlehosted.com."
     proxied: false
     solo: true
     state: "present"
@@ -167,7 +214,7 @@ dns_hosts:
     app: false
     zone: "cozzo.net"
     type: "CNAME"
-    value: "https://sites.google.com/cozzo.net/billcozzolino"
+    value: "ghs.googlehosted.com."
     proxied: false
     solo: true
     state: "present"
