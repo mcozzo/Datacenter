@@ -121,7 +121,7 @@ dns_hosts:
     type: "TXT"
     value: '"v=spf1 include:_spf.google.com ~all"'
     proxied: false
-    solo: true
+    #solo: true
     state: "present"
   - record: "@"
     dynamic: false 
@@ -130,7 +130,7 @@ dns_hosts:
     type: "TXT"
     value: '"google-site-verification=oryCbT_LDdJrN0Q70U4h32dwppqoIIBVav1Ii55EbB4"'
     proxied: false
-    solo: true
+    #solo: true
     state: "present"
   - record: "google._domainkey"
     dynamic: false 
@@ -139,18 +139,30 @@ dns_hosts:
     type: "TXT"
     value: '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3EA/PVR1nXoUhQJRfHRmETL1J9JBG0rpvBeECPKKCvag5+af85SmKEd07+rJvFmocrQHccv3Trq5+k8BAKywhs2fqCkfmrgjwKjV5J8EkYmwpeNK95s0JBAg5m2/SbU41MFr9uKmO0VVf5Sf59J5e4iuM47GjWKltiyERYoQ99wIDAQAB"'
     proxied: false
-    solo: true
+    #solo: true
     state: "present"
+  ##################################################################
+  # DMARC
   - record: "_DMARC"
     dynamic: false 
     app: false
     zone: "cozzo.net"
     type: "TXT"
     value: '"v=DMARC1; p=none; rua=mailto:ea72cce83b224d9baa19fe75b0d78993@dmarc-reports.cloudflare.net"'
-    #value: '"v=DMARC1; p=quarantine; rua=mailto:ea72cce83b224d9baa19fe75b0d78993@dmarc-reports.cloudflare.net"'
     proxied: false
-    solo: true
-    state: "present"
+    #solo: true
+    #state: present
+    state: absent
+  - record: "_DMARC"
+    dynamic: false 
+    app: false
+    zone: "cozzo.net"
+    type: "TXT"
+    value: '"v=DMARC1; p=quarantine; rua=mailto:ea72cce83b224d9baa19fe75b0d78993@dmarc-reports.cloudflare.net"'
+    proxied: false
+    #solo: true
+    state: present
+    #state: absent
 
 
   ##################################################################
