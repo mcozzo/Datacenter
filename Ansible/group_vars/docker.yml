@@ -45,7 +45,7 @@ docker_container_2_hosts:
   influxdb.camp.cozzo.net:      docker05.camp.cozzo.net
   frigate.camp.cozzo.net:       docker05.camp.cozzo.net
   bazarr.dc.cozzo.net:          downloader01.dc.cozzo.net
-  recyclarr.cozzo.net:          downloader01.dc.cozzo.net
+  recyclearr.dc.cozzo.net:      downloader01.dc.cozzo.net
 
 docker_iscsi_iqn:
   downloader01.dc.cozzo.net: iqn.1993-08.org.debian:01:downloader01-dc-cozzo-net
