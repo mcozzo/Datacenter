@@ -12,7 +12,7 @@ docker_container_2_hosts:
   dnsfilter02.dc.cozzo.net:     dnsfilter02.dc.cozzo.net
   #jackett.cozzo.net:           downloader01.dc.cozzo.net
   prowlarr.dc.cozzo.net:        downloader01.dc.cozzo.net
-  heimdall.dc.cozzo.net:        downloader01.dc.cozzo.net
+  #heimdall.dc.cozzo.net:        downloader01.dc.cozzo.net
   radarr.dc.cozzo.net:          downloader01.dc.cozzo.net
   sonarr.dc.cozzo.net:          downloader01.dc.cozzo.net
   radarr4k.dc.cozzo.net:        downloader01.dc.cozzo.net
